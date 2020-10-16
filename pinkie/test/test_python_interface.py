@@ -18,6 +18,6 @@ print('-' * 100)
 a = torch.randint(0, 10, (2, 3))
 b = torch.randint(0, 10, (3, 4))
 print(torch.mm(a, b))
-print(lib.mat_mul_cuda(a.to('cuda'), b.to('cuda')))
+print(lib.mat_mul_cuda(a.to('cuda:1'), b.to('cuda:1')))
 
 
