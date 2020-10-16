@@ -1,0 +1,11 @@
+# Tensor
+
+tensor设计为最底层的实现，支持CPU和Cuda两种模式，Tensor自动选择执行CPU和Cuda算子，所有CPU和Cuda都以算子形式实现
+
+tensor的内存管理采用TensorStorage，包含CPU和Cuda两个模式，Tensor上层为TensorView，每一个TensorView包含一个Range
+
+当Tensor和TensorView的[]传入Range的时候返回一个TensorView，Tensor继承TensorView
+
+
+# Some Things
+Cuda统一内存要慢一点，使用CudaMallocManaged的时候也需要用CudaMemCpy，而不是memcpy，直接使用memcpy要慢很多

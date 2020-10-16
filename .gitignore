@@ -1,0 +1,5 @@
+.vscode/
+build/
+pinkie/lib/
+**/__pycache__/
+*.egg-info/
