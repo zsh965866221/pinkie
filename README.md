@@ -4,7 +4,7 @@
 
 # Install
 ```sh
-git clone --recursive http://ai-dev/UII/_git/pinkie
+git clone --recursive https://github.com/zsh965866221/pinkie.git
 cd pinkie
 mkdir build && cd build
 cmake ../pinkie
