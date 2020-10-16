@@ -80,4 +80,7 @@ set(DIR_THIRD_PARTY 3rd-party)
 add_subdirectory(${DIR_THIRD_PARTY})
 
 # add test
-add_subdirectory(test)
+add_subdirectory(test/csrc)
+
+# add sub
+add_subdirectory(image/csrc)

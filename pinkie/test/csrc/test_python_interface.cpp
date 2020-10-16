@@ -1,4 +1,4 @@
-#include "pinkie/test/test_python_interface.h"
+#include "pinkie/test/csrc/test_python_interface.h"
 
 #include <torch/torch.h>
 #include <torch/extension.h>

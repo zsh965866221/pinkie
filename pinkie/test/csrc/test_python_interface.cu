@@ -1,4 +1,4 @@
-#include "pinkie/test/test_python_interface.h"
+#include "pinkie/test/csrc/test_python_interface.h"
 
 #include <cuda.h>
 #include <cuda_runtime_api.h>
