@@ -2,6 +2,7 @@
 cuda_add_library(
   pinkie_python_test
   MODULE
+  test_python_interface.h
   test_python_interface.cpp
   test_python_interface.cu
 )

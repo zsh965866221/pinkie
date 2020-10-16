@@ -1,0 +1,21 @@
+file(
+  GLOB
+  PINKIE_IMAGE_SRC
+  frame.h
+  frame.cpp
+)
+source_group(
+  pinkie_image 
+  FILES
+  ${PINKIE_IMAGE_SRC}
+)
+add_library(
+  pinkie_image
+  STATIC
+  ${PINKIE_IMAGE_SRC}
+)
+target_link_libraries(
+  pinkie_image
+  ${TORCH_LIBRARIES}
+  ${EXTRA_LIBS}
+)
