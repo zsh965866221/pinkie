@@ -61,7 +61,7 @@ void Frame::set_axis(const torch::Tensor& axis, const int index) {
   axes_.index_put_({torch::indexing::Slice(), index}, axis);
 }
 
-Frame Frame::to(const c10::Device& device) const {
+Frame Frame::to(const torch::Device& device) const {
   auto frame = Frame(*this);
   frame.origin_ = frame.origin_.to(device);
   frame.spacing_ = frame.spacing_.to(device);
@@ -69,21 +69,13 @@ Frame Frame::to(const c10::Device& device) const {
   return frame;
 }
 
-Frame Frame::to(const std::string& device) const {
-  return this->to(c10::Device(device));
-}
-
-void Frame::to_(const c10::Device& device) {
+void Frame::to_(const torch::Device& device) {
   origin_ = origin_.to(device);
   spacing_ = spacing_.to(device);
   axes_ = axes_.to(device);
 }
 
-void Frame::to_(const std::string& device) {
-  this->to_(c10::Device(device));
-}
-
-c10::Device Frame::device() const {
+torch::Device Frame::device() const {
   return origin_.device();
 }
 

@@ -3,7 +3,6 @@
 
 #include <string>
 
-#include <c10/core/Device.h>
 #include <torch/torch.h>
 
 namespace pinkie {
@@ -27,13 +26,11 @@ public:
   void set_axis(const torch::Tensor& axis, const int index);
 
 public:
-  Frame to(const c10::Device& device) const;
-  Frame to(const std::string& device) const;
-  void to_(const c10::Device& device);
-  void to_(const std::string& device);
+  Frame to(const torch::Device& device) const;
+  void to_(const torch::Device& device);
 
 public:
-  c10::Device device() const;
+  torch::Device device() const;
 
 private:
   torch::Tensor origin_;

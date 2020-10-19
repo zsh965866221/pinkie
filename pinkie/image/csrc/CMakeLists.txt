@@ -3,6 +3,7 @@ file(
   PINKIE_IMAGE_SRC
   frame.h
   frame.cpp
+  image.h
 )
 source_group(
   pinkie_image 

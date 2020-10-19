@@ -1,3 +1,5 @@
+import pinkie
+from pinkie_image_python import Frame
 
 import numpy as np
 import os
@@ -30,10 +32,34 @@ def read_image(path, dtype=None):
   keys = image_itk.GetMetaDataKeys()
   for key in keys:
     tags[key] = image_itk.GetMetaData(key)
-  return image_itk, tags
+
+  tmp_size = image_itk.GetSize()
+  tmp_spacing = image_itk.GetSpacing()
+  tmp_origin = image_itk.GetOrigin()
+  tmp_axes = image_itk.GetDirection()
+
+  size = torch.ones(3)
+  spacing = torch.ones(3)
+  origin = torch.zeros(3)
+  axes = torch.zeros((3, 3))
+
+  L = len(tmp_size)
+  for i in range(L):
+    size[i] = tmp_size[i]
+    spacing[i] = tmp_spacing[i]
+    origin[i] = tmp_origin[i]
+    for j in range(L):
+      axes[i, j] = tmp_axes[j * L + i]
+
+  frame = Frame()
+  frame.set_origin(origin)
+  frame.set_spacing(spacing)
+  frame.set_axes(axes)
+  
+  return frame, tags
 
 
 if __name__ == "__main__":
-  path = '/data2/home/shuheng_zhang/a'
+  path = '/data2/home/shuheng_zhang/test.png'
   image, tags = read_image(path)
   print(image)
