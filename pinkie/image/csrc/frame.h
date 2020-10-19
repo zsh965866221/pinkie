@@ -10,7 +10,7 @@ class Frame {
 public:
   Frame();
   Frame(const Frame& frame);
-  virtual ~Frame();
+  virtual ~Frame() {}
 
 public:
   torch::Tensor origin() const;

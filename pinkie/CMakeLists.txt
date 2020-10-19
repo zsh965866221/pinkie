@@ -83,4 +83,5 @@ add_subdirectory(${DIR_THIRD_PARTY})
 add_subdirectory(test/csrc)
 
 # add sub
-add_subdirectory(image/csrc)
+option(BUILD_TEST "Build test, OFF Default" ON)
+add_subdirectory(image)
