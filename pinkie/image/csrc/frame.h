@@ -2,6 +2,8 @@
 #define PINKIE_IMAGE_CSRC_FRAME_H
 
 #include <string>
+
+#include <c10/core/Device.h>
 #include <torch/torch.h>
 
 namespace pinkie {
@@ -19,10 +21,19 @@ public:
   torch::Tensor axis(int index) const;
 
 public:
-  torch::Tensor set_origin(const torch::Tensor& origin);
-  torch::Tensor set_spacing(const torch::Tensor& spacing);
-  torch::Tensor set_axes(const torch::Tensor& axes);
-  torch::Tensor set_axis(const torch::Tensor& axis, const int index);
+  void set_origin(const torch::Tensor& origin);
+  void set_spacing(const torch::Tensor& spacing);
+  void set_axes(const torch::Tensor& axes);
+  void set_axis(const torch::Tensor& axis, const int index);
+
+public:
+  Frame to(const c10::Device& device) const;
+  Frame to(const std::string& device) const;
+  void to_(const c10::Device& device);
+  void to_(const std::string& device);
+
+public:
+  c10::Device device() const;
 
 private:
   torch::Tensor origin_;
