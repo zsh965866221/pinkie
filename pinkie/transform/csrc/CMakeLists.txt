@@ -1,0 +1,21 @@
+file(
+  GLOB
+  PINKIE_TRANSFORM_SRC
+  rotation.h
+  rotation.cpp
+)
+source_group(
+  pinkie_transform 
+  FILES
+  ${PINKIE_TRANSFORM_SRC}
+)
+add_library(
+  pinkie_transform
+  STATIC
+  ${PINKIE_TRANSFORM_SRC}
+)
+target_link_libraries(
+  pinkie_transform
+  ${TORCH_LIBRARIES}
+  ${EXTRA_LIBS}
+)
