@@ -22,23 +22,27 @@ PYBIND11_MODULE(pinkie_image_python, m) {
 
     .def(
       "to", 
-      py::overload_cast<const c10::Device&>(&pinkie::Frame::to, py::const_)
-    )
-    .def(
-      "to", 
-      py::overload_cast<const std::string&>(&pinkie::Frame::to, py::const_)
-    )
-    .def(
-      "to_", 
-      py::overload_cast<const c10::Device&>(&pinkie::Frame::to_)
+      [] (pinkie::Frame& frame, py::object device) {
+        return frame.to(torch::python::detail::py_object_to_device(device));
+      }
     )
     .def(
       "to_", 
-      py::overload_cast<const std::string&>(&pinkie::Frame::to_)
+      [] (pinkie::Frame& frame, py::object device) {
+        frame.to_(torch::python::detail::py_object_to_device(device));
+      }
     )
 
-    .def("device", &pinkie::Frame::device)
-    
+    .def(
+      "device", 
+      [] (pinkie::Frame& frame) {
+        auto device = frame.device();
+        py::object pyobject;
+        pyobject.ptr() = THPDevice_New(device);
+        return pyobject;
+      }
+    )
+
     .def(
       "__repr__",
       [] (const pinkie::Frame& frame) {
