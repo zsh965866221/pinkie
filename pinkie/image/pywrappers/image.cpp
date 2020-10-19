@@ -1,6 +1,8 @@
 #include "pinkie/image/csrc/frame.h"
 
+#include <sstream>
 #include <torch/extension.h>
+
 
 namespace py = pybind11;
 
@@ -34,8 +36,22 @@ PYBIND11_MODULE(pinkie_image_python, m) {
       "to_", 
       py::overload_cast<const std::string&>(&pinkie::Frame::to_)
     )
-    
+
     .def("device", &pinkie::Frame::device)
+    
+    .def(
+      "__repr__",
+      [] (const pinkie::Frame& frame) {
+        std::stringstream stream;
+        stream << 
+          "<<< Frame Start >>>" << std::endl <<
+          "origin: \n" << frame.origin() << std::endl <<
+          "spacing:\n " << frame.spacing() << std::endl <<
+          "axes: \n" << frame.axes() << std::endl <<
+          "<<< Frame End >>>";
+        return stream.str();
+      }
+    )
   ;
 
 }
