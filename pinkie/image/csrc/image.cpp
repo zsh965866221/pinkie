@@ -1,14 +1,14 @@
-#include "pinkie/image/csrc/frame.h"
+#include "pinkie/image/csrc/image.h"
 
 namespace pinkie {
 
-Frame::Frame() {
+Image::Image() {
   origin_ = torch::zeros({3});
   spacing_ = torch::ones({3});
   axes_ = torch::eye(3);
 }
 
-Frame::Frame(const Frame& frame) {
+Image::Image(const Image& image) {
   origin_ = frame.origin_;
   spacing_ = frame.spacing_;
   axes_ = frame.axes_;
@@ -77,22 +77,6 @@ void Frame::to_(const torch::Device& device) {
 
 torch::Device Frame::device() const {
   return origin_.device();
-}
-
-torch::Tensor Frame::world_to_voxel(const torch::Tensor& world) const {
-  assert(world.dim() == 1);
-  assert(world.size(0) == 3);
-  assert(world.scalar_type() == origin_.scalar_type());
-  assert(world.device() == origin_.device());
-  return torch::matmul((world - origin_), axes_) / spacing_;
-}
-
-torch::Tensor Frame::voxel_to_world(const torch::Tensor& voxel) const {
-  assert(voxel.dim() == 1);
-  assert(voxel.size(0) == 3);
-  assert(voxel.scalar_type() == origin_.scalar_type());
-  assert(voxel.device() == origin_.device());
-  return origin_ + torch::matmul(voxel, axes_) * spacing_;
 }
 
 } // namespace pinkie

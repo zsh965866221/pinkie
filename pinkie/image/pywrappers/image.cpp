@@ -44,6 +44,15 @@ PYBIND11_MODULE(pinkie_image_python, m) {
     )
 
     .def(
+      "world_to_voxel",
+      &pinkie::Frame::world_to_voxel
+    )
+    .def(
+      "voxel_to_world",
+      &pinkie::Frame::voxel_to_world
+    )
+
+    .def(
       "__repr__",
       [] (const pinkie::Frame& frame) {
         std::stringstream stream;

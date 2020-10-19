@@ -32,6 +32,10 @@ public:
 public:
   torch::Device device() const;
 
+public:
+  torch::Tensor world_to_voxel(const torch::Tensor& world) const;
+  torch::Tensor voxel_to_world(const torch::Tensor& voxel) const;
+
 private:
   torch::Tensor origin_;
   torch::Tensor spacing_;

@@ -1,6 +1,8 @@
 #ifndef PINKIE_IMAGE_CSRC_IMAGE_H
 #define PINKIE_IMAGE_CSRC_IMAGE_H
 
+#include "pinkie/image/csrc/frame.h"
+
 #include <string>
 
 #include <torch/torch.h>
@@ -24,12 +26,12 @@ public:
   torch::Tensor size();
 
 public:
+  Frame frame() const;
+  void set_frame(const Frame& frame);
 
 public:
   Image to(const torch::Device& device) const;
-  Image to(const std::string& device) const;
   void to_(const torch::Device& device);
-  void to_(const std::string& device);
 
 public:
   torch::Device device() const;
@@ -37,6 +39,7 @@ public:
 private:
   torch::Tensor size_;
   torch::Tensor data_;
+  Frame frame_;
 };
 
 } // namespace pinkie
