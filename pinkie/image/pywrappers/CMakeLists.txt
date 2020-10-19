@@ -9,6 +9,7 @@ target_link_libraries(
   ${TORCH_LIBRARIES}
   ${TORCH_PYTHON_LIBRARY}
   ${EXTRA_LIBS}
+  pinkie_image
 )
 set_target_properties(
   pinkie_image_python
