@@ -25,7 +25,7 @@ def image_to_itk(image: Image):
       direction_out.append(float(axes[i, j]))
   
   data = image.data().cpu().numpy()
-  if is_2d is not True:
+  if is_2d is True:
     data = data.transpose(2, 1, 0)
   itk = sitk.GetImageFromArray(
     data, 
@@ -71,7 +71,7 @@ def itk_to_image(itk) -> Image:
 
   image = Image(is_2d=is_2d)
   image.set_frame(frame)
-  if is_2d is False:
+  if is_2d is True:
     tmp_data = tmp_data.transpose(2, 1, 0)
   image.set_data(torch.from_numpy(tmp_data))
 

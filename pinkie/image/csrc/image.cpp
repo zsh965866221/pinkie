@@ -19,8 +19,8 @@ Image::Image(
     torch::TensorOptions()
     .dtype(dtype)
     .device(device);
-  data_ = torch::zeros({height, width, depth}, options);
-  size_ = torch::tensor({height, width, depth}, device);
+  data_ = torch::zeros({depth, height, width,}, options);
+  size_ = torch::tensor({depth, height, width}, device);
   frame_ = Frame();
   frame_.to_(device);
   is_2d_ = _is_2d;
@@ -98,9 +98,9 @@ void Image::set_data(const torch::Tensor& data) {
     frame_.to_(data_.device());
     size_ = size_.to(data.device());
   }
-  size_[0] = data.size(0);
+  size_[0] = data.size(2);
   size_[1] = data.size(1);
-  size_[2] = data.size(2);
+  size_[2] = data.size(0);
 }
 
 torch::Tensor Image::size() const {
