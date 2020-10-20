@@ -92,7 +92,11 @@ torch::Tensor Frame::voxel_to_world(const torch::Tensor& voxel) const {
   assert(voxel.size(0) == 3);
   assert(voxel.scalar_type() == origin_.scalar_type());
   assert(voxel.device() == origin_.device());
-  return origin_ + torch::matmul(voxel, axes_) * spacing_;
+  auto ret = torch::zeros({3}, voxel.options());
+  for (int i = 0; i < 3; i++) {
+    ret.add_(voxel[0] * axes_.index({torch::indexing::Slice(), i}) * spacing_[i]);
+  }
+  return origin_ + ret;
 }
 
 } // namespace pinkie
