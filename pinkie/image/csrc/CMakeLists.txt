@@ -4,6 +4,7 @@ file(
   frame.h
   frame.cpp
   image.h
+  image.cpp
 )
 source_group(
   pinkie_image 

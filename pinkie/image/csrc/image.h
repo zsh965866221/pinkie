@@ -17,17 +17,21 @@ public:
     const int& height,
     const int& width,
     const int& depth,
-    const torch::ScalarType& type = torch::kFloat
-    const tircg::Device device = torch::Device(torch::kCPU)
+    const torch::ScalarType dtype = torch::kFloat,
+    const torch::Device device = torch::Device(torch::kCPU)
   );
   virtual ~Image() {}
 
 public:
-  torch::Tensor size();
+  torch::Tensor size() const;
 
 public:
   Frame frame() const;
   void set_frame(const Frame& frame);
+
+public:
+  torch::Tensor data() const;
+  void set_data(const torch::Tensor& data);
 
 public:
   Image to(const torch::Device& device) const;
@@ -35,10 +39,25 @@ public:
 
 public:
   torch::Device device() const;
+  torch::ScalarType dtype() const;
+
+public:
+  Image cast(const torch::ScalarType& type) const;
+  void cast_(const torch::ScalarType& type);
+
+public:
+  torch::Tensor origin() const;
+  torch::Tensor spacing() const;
+  torch::Tensor axes() const;
+  torch::Tensor axis(int index) const;
+
+public:
+  torch::Tensor world_to_voxel(const torch::Tensor& world) const;
+  torch::Tensor voxel_to_world(const torch::Tensor& voxel) const;
 
 private:
-  torch::Tensor size_;
   torch::Tensor data_;
+  torch::Tensor size_;
   Frame frame_;
 };
 

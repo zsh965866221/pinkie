@@ -62,17 +62,19 @@ void Frame::set_axis(const torch::Tensor& axis, const int index) {
 }
 
 Frame Frame::to(const torch::Device& device) const {
-  auto frame = Frame(*this);
-  frame.origin_ = frame.origin_.to(device);
-  frame.spacing_ = frame.spacing_.to(device);
-  frame.axes_ = frame.axes_.to(device);
+  auto frame = Frame();
+  frame.origin_ = origin_.to(device);
+  frame.spacing_ = spacing_.to(device);
+  frame.axes_ = axes_.to(device);
   return frame;
 }
 
 void Frame::to_(const torch::Device& device) {
-  origin_ = origin_.to(device);
-  spacing_ = spacing_.to(device);
-  axes_ = axes_.to(device);
+  if (origin_.device() != device) {
+    origin_ = origin_.to(device);
+    spacing_ = spacing_.to(device);
+    axes_ = axes_.to(device);
+  }
 }
 
 torch::Device Frame::device() const {

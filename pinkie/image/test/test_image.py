@@ -1,8 +1,9 @@
-import numpy as np
-import SimpleITK as sitk
+import pinkie
 
-path = '/data2/home/shuheng_zhang/test.png'
+import torch
 
-image = sitk.ReadImage(path, np.int8)
+from pinkie_image_python import Frame, Image
+
+
+image = Image(10, 10, 10)
 print(image)
-
