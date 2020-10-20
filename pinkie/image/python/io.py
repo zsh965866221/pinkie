@@ -49,10 +49,21 @@ def write_image(image, path, compression=True):
 
 
 if __name__ == "__main__":
-  path = '/data2/home/shuheng_zhang/projects/parser18+/merge/AI01_0001_01_L_diast_best_0.50mm.mhd'
-
+  path = '/data2/home/shuheng_zhang/AI01_0001_01_L_diast_best_0.50mm.mhd'
   image, _ = read_image(path)
-  image.to_(torch.device('cuda'))
   print(image)
-
   write_image(image, '/data2/home/shuheng_zhang/out.mhd')
+
+  path = '/data2/home/shuheng_zhang/test.png'
+  image, _ = read_image(path)
+  print(image)
+  write_image(image, '/data2/home/shuheng_zhang/test_out.jpeg')
+
+  path = '/data2/home/shuheng_zhang/test_out.jpeg'
+  image, _ = read_image(path)
+  data = image.data()
+  image.set_data(data[:, :, :1])
+  print(image)
+  write_image(image, '/data2/home/shuheng_zhang/test_out_gray.jpeg')
+
+

@@ -60,6 +60,9 @@ def itk_to_image(itk) -> Image:
     origin[i] = tmp_origin[i]
     for j in range(L):
       axes[i, j] = tmp_axes[j * L + i]
+  
+  if len(tmp_data.shape) == 2:
+    tmp_data = tmp_data.reshape(tmp_data.shape[0], tmp_data.shape[1], -1)
 
   frame = Frame()
   frame.set_origin(origin)
