@@ -9,9 +9,10 @@ namespace pinkie {
 namespace transform {
 
 Image resample_trilinear(
-  const Image& image, 
-  const Frame& frame,
-  const torch::Tensor& size
+  const Image& src_image, 
+  const Frame& dst_frame,
+  const torch::Tensor& dst_size,
+  float padding_value
 );
 
 } // namespace transform

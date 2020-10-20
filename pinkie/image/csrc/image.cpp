@@ -87,7 +87,7 @@ void Image::cast_(const torch::ScalarType& type) {
   }
 }
 
-torch::Tensor Image::data() const {
+const torch::Tensor& Image::data() const {
   return data_;
 }
 

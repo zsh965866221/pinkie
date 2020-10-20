@@ -33,7 +33,7 @@ public:
   void set_frame(const Frame& frame);
 
 public:
-  torch::Tensor data() const;
+  const torch::Tensor& data() const;
   void set_data(const torch::Tensor& data);
 
 public:
