@@ -11,14 +11,17 @@ namespace pinkie {
 
 class Image {
 public:
-  Image();
+  Image(
+    const bool _is_2d = false
+  );
   Image(const Image& image);
   Image(
     const int& height,
     const int& width,
     const int& depth,
     const torch::ScalarType dtype = torch::kFloat,
-    const torch::Device device = torch::Device(torch::kCPU)
+    const torch::Device device = torch::Device(torch::kCPU),
+    const bool _is_2d = false
   );
   virtual ~Image() {}
 
@@ -40,6 +43,7 @@ public:
 public:
   torch::Device device() const;
   torch::ScalarType dtype() const;
+  bool is_2d() const;
 
 public:
   Image cast(const torch::ScalarType& type) const;
@@ -59,6 +63,7 @@ private:
   torch::Tensor data_;
   torch::Tensor size_;
   Frame frame_;
+  bool is_2d_;
 };
 
 } // namespace pinkie

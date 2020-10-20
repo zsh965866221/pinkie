@@ -7,7 +7,8 @@ Image::Image(
   const int& width,
   const int& depth,
   const torch::ScalarType dtype,
-  const torch::Device device
+  const torch::Device device,
+  const bool _is_2d
 ) {
   assert(
     (height >= 0) &&
@@ -22,15 +23,18 @@ Image::Image(
   size_ = torch::tensor({height, width, depth}, device);
   frame_ = Frame();
   frame_.to_(device);
+  is_2d_ = _is_2d;
 }
 
-Image::Image(): Image(0, 0, 0) {
+Image::Image(const bool _is_2d): Image(0, 0, 0) {
+  is_2d_ = _is_2d;
 }
 
 Image::Image(const Image& image) {
   data_ = image.data_;
   frame_ = image.frame_;
   size_ = image.size_;
+  is_2d_ = image.is_2d_;
 }
 
 
@@ -66,6 +70,7 @@ Image Image::to(const torch::Device& device) const {
   image.data_ = data_.to(device);
   image.frame_.to_(device);
   image.size_ = size_.to(device);
+  return image;
 }
 
 Image Image::cast(const torch::ScalarType& type) const {
@@ -73,6 +78,7 @@ Image Image::cast(const torch::ScalarType& type) const {
   image.data_ = data_.to(type);
   image.frame_ = frame_;
   image.size_ = size_;
+  return image;
 }
 
 void Image::cast_(const torch::ScalarType& type) {
@@ -99,6 +105,10 @@ void Image::set_data(const torch::Tensor& data) {
 
 torch::Tensor Image::size() const {
   return size_;
+}
+
+bool Image::is_2d() const {
+  return is_2d_;
 }
 
 torch::Tensor Image::origin() const {

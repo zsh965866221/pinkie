@@ -75,7 +75,14 @@ PYBIND11_MODULE(pinkie_image_python, m) {
   pydefault_device.ptr() = THPDevice_New(torch::Device(torch::kCPU));
 
   py::class_<pinkie::Image>(m, "Image")
-    .def(py::init())
+    .def(
+      py::init(
+        [] (const bool is_2d) {
+          return pinkie::Image(is_2d);
+        }
+      ),
+      "is_2d"_a=false
+    )
     .def(py::init<const pinkie::Image&>())
     .def(
       py::init(
@@ -84,14 +91,16 @@ PYBIND11_MODULE(pinkie_image_python, m) {
           const int& width,
           const int& depth,
           py::object dtype,
-          py::object device
+          py::object device,
+          const bool is_2d
         ) {
           return pinkie::Image(
             height,
             width,
             depth,
             torch::python::detail::py_object_to_dtype(dtype),
-            torch::python::detail::py_object_to_device(device)
+            torch::python::detail::py_object_to_device(device),
+            is_2d
           );
         }
       ),
@@ -99,7 +108,8 @@ PYBIND11_MODULE(pinkie_image_python, m) {
       "width"_a,
       "depth"_a,
       "dtype"_a=pydefault_dtype,
-      "device"_a=pydefault_device
+      "device"_a=pydefault_device,
+      "is_2d"_a=false
     )
 
     .def("frame", &pinkie::Image::frame)
@@ -161,6 +171,7 @@ PYBIND11_MODULE(pinkie_image_python, m) {
     .def("axes", &pinkie::Image::axes)
     .def("axis", &pinkie::Image::axis)
     .def("size", &pinkie::Image::size)
+    .def("is_2d", &pinkie::Image::is_2d)
 
     .def(
       "world_to_voxel",
