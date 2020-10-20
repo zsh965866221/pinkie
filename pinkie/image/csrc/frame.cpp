@@ -28,7 +28,7 @@ torch::Tensor Frame::axes() const {
 
 torch::Tensor Frame::axis(const int index) const {
   assert(index <= 2);
-  return axes_.index({torch::indexing::Slice(), index});
+  return axes_.index({index, torch::indexing::Slice()});
 }
 
 void Frame::set_origin(const torch::Tensor& origin) {
@@ -58,7 +58,7 @@ void Frame::set_axis(const torch::Tensor& axis, const int index) {
   assert(axis.size(0) == axes_.size(0));
   assert(axis.scalar_type() == axes_.scalar_type());
   assert(axis.device() == axes_.device());
-  axes_.index_put_({torch::indexing::Slice(), index}, axis);
+  axes_.index_put_({index, torch::indexing::Slice()}, axis);
 }
 
 Frame Frame::to(const torch::Device& device) const {
@@ -86,7 +86,7 @@ torch::Tensor Frame::world_to_voxel(const torch::Tensor& world) const {
   assert(world.size(0) == 3);
   assert(world.scalar_type() == origin_.scalar_type());
   assert(world.device() == origin_.device());
-  return torch::matmul((world - origin_), axes_) / spacing_;
+  return torch::matmul(axes_, world - origin_) / spacing_;
 }
 
 torch::Tensor Frame::voxel_to_world(const torch::Tensor& voxel) const {
@@ -96,7 +96,7 @@ torch::Tensor Frame::voxel_to_world(const torch::Tensor& voxel) const {
   assert(voxel.device() == origin_.device());
   auto ret = torch::zeros({3}, voxel.options());
   for (int i = 0; i < 3; i++) {
-    ret.add_(voxel[0] * axes_.index({torch::indexing::Slice(), i}) * spacing_[i]);
+    ret.add_(voxel[0] * axes_.index({i, torch::indexing::Slice()}) * spacing_[i]);
   }
   return origin_ + ret;
 }

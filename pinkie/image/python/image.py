@@ -22,7 +22,7 @@ def image_to_itk(image: Image):
     origin_out.append(float(origin[i]))
     spacing_out.append(float(spacing[i]))
     for j in range(L):
-      direction_out.append(float(axes[j, i]))
+      direction_out.append(float(axes[i, j]))
   
   data = image.data().cpu().numpy()
   if is_2d is not True:
@@ -59,7 +59,7 @@ def itk_to_image(itk) -> Image:
     spacing[i] = tmp_spacing[i]
     origin[i] = tmp_origin[i]
     for j in range(L):
-      axes[i, j] = tmp_axes[j * L + i]
+      axes[i, j] = tmp_axes[i * L + j]
   
   if len(tmp_data.shape) == 2:
     tmp_data = tmp_data.reshape(tmp_data.shape[0], tmp_data.shape[1], -1)
