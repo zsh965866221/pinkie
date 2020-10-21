@@ -11,7 +11,7 @@ void frame_delete(void* ptr);
 void frame_origin(void* ptr, float* out);
 void frame_spacing(void* ptr, float* out);
 void frame_axes(void* ptr, float* out);
-void frame_axis(void* ptr, int index, float* out);
+void frame_axis(void* ptr, unsigned int index, float* out);
 
 
 #ifdef __cplusplus
