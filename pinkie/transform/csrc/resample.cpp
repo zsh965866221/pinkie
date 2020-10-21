@@ -1,5 +1,7 @@
 #include "pinkie/transform/csrc/resample.h"
 
+#include <omp.h>
+
 namespace pinkie {
 namespace transform {
 
@@ -50,23 +52,30 @@ Image resample_trilinear(
   auto src_accessor = src_data.accessor<float, 3>();
   auto dst_accessor = dst_data.accessor<float, 3>();
 
+  #pragma omp parallel for
   for (long z = 0; z < dst_size_ptr[2]; z++) {
     for (long y = 0; y < dst_size_ptr[1]; y++) {
       for (long x = 0; x < dst_size_ptr[0]; x++) {
-        auto curr = origin + direction_z * z + direction_x * x + direction_y * y;
-        float* curr_ptr = curr.data_ptr<float>();
-        long fx = static_cast<long>(std::floor(curr_ptr[0]));
-        long fy = static_cast<long>(std::floor(curr_ptr[1]));
-        long fz = static_cast<long>(std::floor(curr_ptr[2]));
+        float curr[3];
+        for (int i = 0; i < 3; i++) {
+          curr[i] = 
+            origin.data_ptr<float>()[i] + 
+            direction_z.data_ptr<float>()[i] * static_cast<float>(z) + 
+            direction_y.data_ptr<float>()[i] * static_cast<float>(y) + 
+            direction_x.data_ptr<float>()[i] * static_cast<float>(x);
+        }
+        long fx = static_cast<long>(std::floor(curr[0]));
+        long fy = static_cast<long>(std::floor(curr[1]));
+        long fz = static_cast<long>(std::floor(curr[2]));
 
-        float delta_x = curr_ptr[0] - static_cast<float>(fx);
-        float delta_y = curr_ptr[1] - static_cast<float>(fy);
-        float delta_z = curr_ptr[2] - static_cast<float>(fz);
+        float delta_x = curr[0] - static_cast<float>(fx);
+        float delta_y = curr[1] - static_cast<float>(fy);
+        float delta_z = curr[2] - static_cast<float>(fz);
 
         if (
-          curr_ptr[0] < 0.0 || curr_ptr[0] > src_size_ptr[0] - 1 ||
-          curr_ptr[1] < 0.0 || curr_ptr[1] > src_size_ptr[1] - 1 ||
-          curr_ptr[2] < 0.0 || curr_ptr[2] > src_size_ptr[2] - 1
+          curr[0] < 0.0 || curr[0] > src_size_ptr[0] - 1 ||
+          curr[1] < 0.0 || curr[1] > src_size_ptr[1] - 1 ||
+          curr[2] < 0.0 || curr[2] > src_size_ptr[2] - 1
         ) {
           dst_accessor[z][y][x] = padding_value;
           continue;

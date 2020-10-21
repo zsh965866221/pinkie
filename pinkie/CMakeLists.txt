@@ -18,7 +18,7 @@ IF(NOT CMAKE_BUILD_TYPE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
 if (UNIX OR APPLE)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -O2")
 endif(UNIX OR APPLE)
 
 # open all warning
@@ -74,6 +74,15 @@ message("CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
 find_package(Torch REQUIRED)
 find_library(TORCH_PYTHON_LIBRARY torch_python PATHS "${TORCH_INSTALL_PREFIX}/lib")
 find_library(TORCH_C10_LIBRARY c10 PATHS "${TORCH_INSTALL_PREFIX}/lib")
+
+# add OPENMP
+find_package(OpenMP)
+if (OPENMP_FOUND)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+else (OPENMP_FOUND)
+  message(FATAL_ERROR "OpenMP not found.")
+endif()
 
 # 3rd-party
 set(DIR_THIRD_PARTY 3rd-party)
