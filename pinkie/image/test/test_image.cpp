@@ -5,9 +5,17 @@
 using namespace pinkie;
 
 int main() {
-  auto a = torch::tensor({1,2,3}, torch::kFloat);
   Frame frame;
-  frame.set_axis(a, 1);
-  std::cout << frame.axis(1) << std::endl;
+  frame.set_axis(Eigen::Vector3f::Random(), 1);
+  std::cout << frame.axes() << std::endl;
+
+  auto a = frame.origin();
+  a(0) = 10;
+
+
+  auto b = a.array();
+  b(1) = 10;
+  std::cout << a << std::endl;
+  std::cout << b << std::endl;
   return 0;
 }
