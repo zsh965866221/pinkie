@@ -88,8 +88,8 @@ endif()
 set(DIR_THIRD_PARTY 3rd-party)
 add_subdirectory(${DIR_THIRD_PARTY})
 
-# add test
-add_subdirectory(test/csrc)
+# # add test
+# add_subdirectory(test/csrc)
 
 # add sub
 option(BUILD_TEST "Build test, OFF Default" ON)

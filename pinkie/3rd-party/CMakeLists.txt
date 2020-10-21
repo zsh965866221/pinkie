@@ -22,3 +22,4 @@ if (USE_GFLAGS)
   add_subdirectory(gflags)
 endif()
 
+add_subdirectory(eigen)
