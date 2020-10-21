@@ -133,6 +133,8 @@ PYBIND11_MODULE(pinkie_image_python, m) {
       }
     )
 
+    .def("clone", &pinkie::Image::clone)
+
     .def(
       "device", 
       [] (pinkie::Image& image) {

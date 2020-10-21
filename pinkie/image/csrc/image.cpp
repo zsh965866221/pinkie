@@ -111,6 +111,15 @@ bool Image::is_2d() const {
   return is_2d_;
 }
 
+Image Image::clone() const {
+  Image image;
+  image.frame_ = frame_.clone();
+  image.data_ = data_.clone();
+  image.size_ = size_.clone();
+  image.is_2d_ = is_2d_;
+  return image;
+}
+
 torch::Tensor Image::origin() const {
   return frame_.origin();
 }

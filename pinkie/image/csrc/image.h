@@ -46,6 +46,9 @@ public:
   bool is_2d() const;
 
 public:
+  Image clone() const;
+
+public:
   Image cast(const torch::ScalarType& type) const;
   void cast_(const torch::ScalarType& type);
 
