@@ -6,7 +6,7 @@
 namespace py = pybind11;
 
 PYBIND11_MODULE(pinkie_transform_python, m) {
-  m.def("rotation_matrix", &pinkie::transform::rotation_matrix);
+  m.def("rotate", &pinkie::transform::rotate);
   m.def("resample_trilinear", &pinkie::transform::resample_trilinear);
 }
 

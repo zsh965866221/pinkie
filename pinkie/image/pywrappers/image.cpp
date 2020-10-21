@@ -45,6 +45,8 @@ PYBIND11_MODULE(pinkie_image_python, m) {
       }
     )
 
+    .def("clone", &pinkie::Frame::clone)
+
     .def(
       "world_to_voxel",
       &pinkie::Frame::world_to_voxel

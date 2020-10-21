@@ -29,6 +29,9 @@ public:
   Frame to(const torch::Device& device) const;
   void to_(const torch::Device& device);
 
+public: 
+ Frame clone() const;
+
 public:
   torch::Device device() const;
 

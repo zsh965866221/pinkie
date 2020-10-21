@@ -9,7 +9,7 @@ namespace transform {
 /** \brief comate rotation matrix with rotation axis and theta
  * \ref https://en.wikipedia.org/wiki/Rotation_matrix
 */
-torch::Tensor rotation_matrix(
+torch::Tensor rotate(
   const torch::Tensor& axis, 
   const float theta_radian
 );

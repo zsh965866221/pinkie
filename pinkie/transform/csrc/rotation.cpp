@@ -3,7 +3,7 @@
 namespace pinkie {
 namespace transform {
 
-torch::Tensor rotation_matrix(
+torch::Tensor rotate(
   const torch::Tensor& axis, 
   const float theta_radian
 ) {

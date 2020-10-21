@@ -81,6 +81,14 @@ torch::Device Frame::device() const {
   return origin_.device();
 }
 
+Frame Frame::clone() const {
+  Frame frame;
+  frame.origin_ = origin_.clone();
+  frame.spacing_ = spacing_.clone();
+  frame.axes_ = axes_.clone();
+  return frame;
+}
+
 torch::Tensor Frame::world_to_voxel(const torch::Tensor& world) const {
   assert(world.dim() == 1);
   assert(world.size(0) == 3);

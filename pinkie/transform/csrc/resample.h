@@ -12,7 +12,7 @@ Image resample_trilinear(
   const Image& src_image, 
   const Frame& dst_frame,
   const torch::Tensor& dst_size,
-  float padding_value
+  float padding_value = 0.0f
 );
 
 } // namespace transform

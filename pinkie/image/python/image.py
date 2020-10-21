@@ -61,6 +61,9 @@ def itk_to_image(itk) -> Image:
     for j in range(L):
       axes[i, j] = tmp_axes[i * L + j]
   
+  if L == 2:
+    axes[2, 2] = 1.0
+  
   if len(tmp_data.shape) == 2:
     tmp_data = tmp_data.reshape(tmp_data.shape[0], tmp_data.shape[1], -1)
 
