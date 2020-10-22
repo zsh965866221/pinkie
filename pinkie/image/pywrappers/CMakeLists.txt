@@ -1,10 +1,10 @@
 add_library(
-  pyframe
+  pinkie_pyframe
   SHARED
   frame.h
   frame.cpp
 )
 target_link_libraries(
-  pyframe
+  pinkie_pyframe
   pinkie_image
 )

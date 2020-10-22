@@ -64,3 +64,59 @@ void frame_axis(void* ptr, unsigned int index, float* out) {
   const float* src_ptr = axis.data();
   memcpy(out, src_ptr, sizeof(float) * 3);
 }
+
+void frame_set_origin(void* ptr, float* src) {
+  assert(ptr != nullptr);
+  assert(src != nullptr);
+
+  Frame* frame = static_cast<Frame*>(ptr);
+  frame->set_origin(Eigen::Map<Eigen::Vector3f>(src));
+}
+
+void frame_set_spacing(void* ptr, float* src) {
+  assert(ptr != nullptr);
+  assert(src != nullptr);
+
+  Frame* frame = static_cast<Frame*>(ptr);
+  frame->set_spacing(Eigen::Map<Eigen::Vector3f>(src));
+}
+
+void frame_set_axes(void* ptr, float* src) {
+  assert(ptr != nullptr);
+  assert(src != nullptr);
+
+  Frame* frame = static_cast<Frame*>(ptr);
+  frame->set_axes(Eigen::Map<Eigen::Matrix3f>(src));
+}
+
+void frame_set_axis(void* ptr, float* src, unsigned int index) {
+  assert(ptr != nullptr);
+  assert(src != nullptr);
+
+  Frame* frame = static_cast<Frame*>(ptr);
+  frame->set_axis(Eigen::Map<Eigen::Vector3f>(src), static_cast<size_t>(index));
+}
+
+void frame_world_to_voxel(void* ptr, float* src, float* out) {
+  assert(ptr != nullptr);
+  assert(src != nullptr);
+  assert(out != nullptr);
+
+  Frame* frame = static_cast<Frame*>(ptr);
+  auto voxel = frame->world_to_voxel(
+    Eigen::Map<Eigen::Vector3f>(src)
+  );
+  memcpy(out, voxel.data(), sizeof(float) * 3);
+}
+
+void frame_voxel_to_world(void* ptr, float* src, float* out) {
+  assert(ptr != nullptr);
+  assert(src != nullptr);
+  assert(out != nullptr);
+
+  Frame* frame = static_cast<Frame*>(ptr);
+  auto world = frame->voxel_to_world(
+    Eigen::Map<Eigen::Vector3f>(src)
+  );
+  memcpy(out, world.data(), sizeof(float) * 3);
+}
