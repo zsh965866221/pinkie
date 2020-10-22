@@ -4,18 +4,12 @@
 
 namespace pinkie {
 
-size_t pixeltype_size(const PixelType type) {
-  switch (type) {
-  case PixelType_int8:          return sizeof(char);
-  case PixelType_uint8:         return sizeof(unsigned char);
-  case PixelType_int32:         return sizeof(int);
-  case PixelType_uint32:        return sizeof(unsigned int);
-  case PixelType_int64:         return sizeof(long);
-  case PixelType_uint64:        return sizeof(unsigned long);
-  case PixelType_float32:       return sizeof(float);
-  case PixelType_float64:       return sizeof(double);
-  default: assert(false);       return 0;
-  }
+size_t pixeltype_size(const PixelType dtype) {
+  size_t size = 0;
+  CALL_DTYPE(dtype, [&]() {
+    size = sizeof(pixeltype_t);
+  });
+  return size;
 }
 
 std::string pixeltype_string(const PixelType type) {
@@ -30,6 +24,25 @@ std::string pixeltype_string(const PixelType type) {
   case PixelType_float64:       return "float64";
   default: assert(false);       return "UnKnown";
   }
+}
+
+size_t pixeltype_byte_size(
+  const PixelType type, 
+  size_t h, size_t w, size_t d
+) {
+  return pixeltype_size(type) * h * w * d;
+}
+
+size_t pixeltype_byte_size(
+  const PixelType type, 
+  const Eigen::Vector3i& size
+) {
+  return pixeltype_byte_size(
+    type,
+    static_cast<size_t>(size(0)),
+    static_cast<size_t>(size(1)),
+    static_cast<size_t>(size(2))
+  );
 }
 
 } // namespace pinkie

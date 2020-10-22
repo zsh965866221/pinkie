@@ -31,10 +31,12 @@ public:
 
 public:
   void* data() const;
+  void* data();
   void set_data(
     void* data, 
     const Eigen::Vector3i& size, 
     const PixelType dtype,
+    bool _is_2d = false,
     bool copy = true
   );
   void set_data(
@@ -43,12 +45,13 @@ public:
     const int width,
     const int depth,
     const PixelType dtype, 
+    bool _is_2d = false,
     bool copy = true
   );
 
 public:
   bool is_2d() const;
-  bool set_2d(bool p);
+  void set_2d(bool p);
 
 public:
   PixelType dtype() const;
