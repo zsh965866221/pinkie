@@ -154,8 +154,14 @@ Image Image::cast(const PixelType& dtype) const {
     dtype,
     is_2d_
   );
-  // for (int i = 0; i < height * width * depth; i++) {
-  // }
+  CALL_DTYPE(dtype, type_dst, [&] {
+    CALL_DTYPE(dtype_, type_src, [&] {
+      type_dst a;
+      a+1;
+      type_src b;
+      b+1;
+    });
+  });
 }
 
 } // namespace pinkie

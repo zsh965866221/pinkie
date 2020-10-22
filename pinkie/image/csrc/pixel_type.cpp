@@ -6,7 +6,7 @@ namespace pinkie {
 
 size_t pixeltype_size(const PixelType dtype) {
   size_t size = 0;
-  CALL_DTYPE(dtype, [&]() {
+  CALL_DTYPE(dtype, pixeltype_t, [&]() {
     size = sizeof(pixeltype_t);
   });
   return size;

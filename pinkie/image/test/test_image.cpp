@@ -6,7 +6,7 @@
 using namespace pinkie;
 
 int main() {
-  PixelType a = PixelType_int64;
+  PixelType a = PixelType_int32;
   std::cout << pixeltype_size(a) << std::endl;
   return 0;
 }
