@@ -30,8 +30,10 @@ public:
   void set_frame(const Frame& frame);
 
 public:
-  void* data() const;
-  void* data();
+  template<typename T>
+  T* data() const {
+    return static_cast<T*>(data_);
+  }
   void set_data(
     void* data, 
     const Eigen::Vector3i& size, 
@@ -48,6 +50,13 @@ public:
     bool _is_2d = false,
     bool copy = true
   );
+  void set_zero();
+  void allocate(
+    const int height,
+    const int width,
+    const int depth,
+    const PixelType dtype
+  );
 
 public:
   bool is_2d() const;
@@ -60,6 +69,7 @@ public:
 
 private:
   void clear_memory();
+  size_t update_buffer();
 
 private:
   void* data_;

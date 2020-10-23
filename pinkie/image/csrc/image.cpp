@@ -21,9 +21,7 @@ Image::Image(const Image& image, bool copy) {
   dtype_ = image.dtype_;
   if (copy == true) {
     clear_memory();
-    owned_ = true;
-    size_t byte_size = pixeltype_byte_size(dtype_, size_);
-    data_ = malloc(byte_size);
+    size_t byte_size = update_buffer();
     memcpy(data_, image.data_, byte_size);
   } else {
     data_ = image.data_;
@@ -42,14 +40,9 @@ Image::Image(
   size_(1) = width;
   size_(2) = depth;
   is_2d_ = _is_2d;
-  owned_ = true;
   dtype_ = dtype;
 
-  size_t byte_size = pixeltype_byte_size(
-    dtype_, 
-    size_
-  );
-  data_ = malloc(byte_size);
+  update_buffer();
 }
 
 Image::~Image() {
@@ -59,7 +52,16 @@ Image::~Image() {
 void Image::clear_memory() {
   if (owned_ == true && data_ != nullptr) {
     free(data_);
+    data_ = nullptr;
+    owned_ = false;
   }
+}
+
+size_t Image::update_buffer() {
+  owned_ = true;
+  size_t byte_size = pixeltype_byte_size(dtype_, size_);
+  data_ = malloc(byte_size);
+  return byte_size;
 }
 
 const Eigen::Vector3i& Image::size() const {
@@ -72,14 +74,6 @@ const Frame& Image::frame() const {
 
 void Image::set_frame(const Frame& frame) {
   frame_ = frame;
-}
-
-void* Image::data() const {
-  return data_;
-}
-
-void* Image::data() {
-  return data_;
 }
 
 void Image::set_data(
@@ -99,9 +93,7 @@ void Image::set_data(
   is_2d_ = _is_2d;
   if (copy == true) {
     clear_memory();
-    owned_ = true;
-    size_t byte_size = pixeltype_byte_size(dtype_, size_);
-    data_ = malloc(byte_size);
+    size_t byte_size = update_buffer();
     memcpy(data_, data, byte_size);
   } else {
     owned_ = false;
@@ -115,7 +107,6 @@ void Image::set_data(
   bool _is_2d,
   bool copy
 ) {
-
   set_data(
     data,
     size(0),
@@ -125,7 +116,25 @@ void Image::set_data(
     _is_2d,
     copy
   );
-  
+}
+
+void Image::allocate(
+  const int height,
+  const int width,
+  const int depth,
+  const PixelType dtype
+) {
+  dtype_ = dtype;
+  size_(0) = height;
+  size_(1) = width;
+  size_(2) = depth;
+  clear_memory();
+  update_buffer();
+}
+
+void Image::set_zero() {
+  size_t byte_size = pixeltype_byte_size(dtype_, size_);
+  memset(data_, 0x00, byte_size);
 }
 
 bool Image::is_2d() const {
@@ -155,13 +164,31 @@ Image Image::cast(const PixelType& dtype) const {
     is_2d_
   );
   CALL_DTYPE(dtype, type_dst, [&] {
-    CALL_DTYPE(dtype_, type_src, [&] {
-      type_dst a;
-      a+1;
-      type_src b;
-      b+1;
-    });
-  });
+  CALL_DTYPE(dtype_, type_src, [&] {
+    type_dst* data_dst = image.data<type_dst>();
+    type_src* data_src = this->data<type_src>();
+    for (int i = 0; i < height * width * depth; i++) {
+      data_dst[i] = static_cast<type_dst>(data_src[i]);
+    }
+  });});
+  return image;
+}
+
+void Image::cast_(const PixelType& dtype) {
+  if (dtype == dtype_) {
+    return;
+  }
+  dtype_ = dtype;
+  CALL_DTYPE(dtype, type_dst, [&] {
+  CALL_DTYPE(dtype_, type_src, [&] {
+    type_src* data_src = this->data<type_src>();
+    this->update_buffer();
+    type_dst* data_dst = this->data<type_dst>();
+    for (int i = 0; i < size_(0) * size_(1) * size_(2); i++) {
+      data_dst[i] = static_cast<type_dst>(data_src[i]);
+    }
+    free(data_src);
+  });});
 }
 
 } // namespace pinkie
