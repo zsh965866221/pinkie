@@ -6,12 +6,15 @@ project(pinkie)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(USE_CUDA "USE CUDA, OFF Default" OFF)
+
 # set CUDA
-find_package(CUDA REQUIRED)
-enable_language(CUDA)
-set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
-set(CMAKE_CUDA_STANDARD_REQUIRED ON)
-add_definitions(-D_GLIBCXX_USE_CXX11_ABI=0)
+if (USE_CUDA)
+  find_package(CUDA REQUIRED)
+  enable_language(CUDA)
+  set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
+  set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+endif()
 
 IF(NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
@@ -74,4 +77,4 @@ add_subdirectory(${DIR_THIRD_PARTY})
 # add sub
 option(BUILD_TEST "Build test, OFF Default" ON)
 add_subdirectory(image)
-add_subdirectory(transform)
+# add_subdirectory(transform)
