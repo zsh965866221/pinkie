@@ -58,23 +58,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/../
 )
 
-# tools
-include(
-  tools/FindPythonLibs.cmake
-)
-add_library(pythonlibs INTERFACE)
-target_include_directories(
-  pythonlibs INTERFACE
-  ${PYTHON_INCLUDE_DIRS}
-)
-
-# torch
-set(CMAKE_PREFIX_PATH ${TORCH_INSTALL_DIR})
-message("CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
-find_package(Torch REQUIRED)
-find_library(TORCH_PYTHON_LIBRARY torch_python PATHS "${TORCH_INSTALL_PREFIX}/lib")
-find_library(TORCH_C10_LIBRARY c10 PATHS "${TORCH_INSTALL_PREFIX}/lib")
-
 # add OPENMP
 find_package(OpenMP)
 if (OPENMP_FOUND)
@@ -87,9 +70,6 @@ endif()
 # 3rd-party
 set(DIR_THIRD_PARTY 3rd-party)
 add_subdirectory(${DIR_THIRD_PARTY})
-
-# # add test
-# add_subdirectory(test/csrc)
 
 # add sub
 option(BUILD_TEST "Build test, OFF Default" ON)
