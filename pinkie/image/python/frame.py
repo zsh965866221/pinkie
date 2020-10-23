@@ -138,15 +138,14 @@ def load_lib():
 lib = load_lib()
 
 class Frame:
-  def __init__(self, frame=None):
+  def __init__(self, ptr):
     if frame is None:
       self.ptr = lib.frame_new()
     else:
-      assert isinstance(frame, Frame)
-      self.ptr = lib.frame_clone(frame.ptr)
+      self.ptr = ptr
   
   def copy(self):
-    return Frame(self)
+    return Frame(lib.frame_clone(self.ptr))
 
   def __del__(self):
     lib.frame_delete(self.ptr)

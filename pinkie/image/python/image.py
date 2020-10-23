@@ -1,81 +1,126 @@
-import pinkie
-import torch
-from pinkie_image_python import Frame, Image
+# coding=utf-8
 
+import ctypes
 import numpy as np
-import os
-import SimpleITK as sitk
 
+from pinkie.image.python.frame import Frame
+from pinkie.image.python.pixel_type import dtype_dict, dtype_list
+from pinkie.utils.python.ctypes import find_dll
 
-def image_to_itk(image: Image):
-  is_2d = image.is_2d()
-  L = 2 if is_2d is True else 3
+def load_lib():
+  lib_path = find_dll('pinkie_pyimage')
+  if lib_path is None:
+    raise 'lib not exists'
+  lib = ctypes.cdll.LoadLibrary(lib_path)
 
-  axes = image.axes().cpu().numpy()
-  spacing = image.spacing().cpu().numpy()
-  origin = image.origin().cpu().numpy()
+  lib.image_new.argtypes = [ctypes.c_int, ctypes.c_bool]
+  lib.image_new.restype = ctypes.c_void_p
 
-  direction_out = []
-  spacing_out = []
-  origin_out = []
-  for i in range(L):
-    origin_out.append(float(origin[i]))
-    spacing_out.append(float(spacing[i]))
-    for j in range(L):
-      direction_out.append(float(axes[i, j]))
+  lib.image_clone.argtypes = [ctypes.c_void_p, ctypes.c_bool]
+  lib.image_clone.restype = ctypes.c_void_p
+
+  lib.image_new_owned.argtypes = [
+    ctypes.c_int, ctypes.c_int, ctypes.c_int,
+    ctypes.c_int, ctypes.c_bool
+  ]
+  lib.image_new_owned.restype = ctypes.c_void_p
+
+  lib.image_delete.argtypes = [ctypes.c_void_p]
+  lib.image_delete.restype = None
+
+  lib.image_size.argtypes = [
+    ctypes.c_void_p, 
+    np.ctypeslib.ndpointer(
+      dtype=ctypes.c_int,
+      ndim=1,
+      flags='F_CONTIGUOUS'
+    ),
+  ]
+  lib.image_size.restype = None
+
+  lib.image_frame.argtypes = [ctypes.c_void_p]
+  lib.image_frame.restype = ctypes.c_void_p
+
+  lib.image_set_frame.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+  lib.image_set_frame.restype = None
+
+  lib.image_data.argtypes = [ctypes.c_void_p]
+  lib.image_data.restype = ctypes.c_void_p
+
+  lib.image_size.argtypes = [
+    ctypes.c_void_p, 
+    np.ctypeslib.ndpointer(
+      ndim=3,
+      flags='C_CONTIGUOUS'
+    ),
+    ctypes.c_int, ctypes.c_int, ctypes.c_int, 
+    ctypes.c_int, ctypes.c_bool, ctypes.c_bool
+  ]
+  lib.image_size.restype = None
+
+  lib.image_set_zero.argtypes = [ctypes.c_void_p]
+  lib.image_set_zero.restype = None
+
+  lib.image_is_2d.argtypes = [ctypes.c_void_p]
+  lib.image_is_2d.restype = ctypes.c_bool
+
+  lib.image_set_2d.argtypes = [ctypes.c_void_p, ctypes.c_bool]
+  lib.image_set_2d.restype = None
+
+  lib.image_dtype.argtypes = [ctypes.c_void_p]
+  lib.image_dtype.restype = ctypes.c_bool
+
+  lib.image_cast.argtypes = [ctypes.c_void_p, ctypes.c_int]
+  lib.image_cast.restype = ctypes.c_void_p
+
+  lib.image_cast_.argtypes = [ctypes.c_void_p, ctypes.c_int]
+  lib.image_cast_.restype = None
   
-  data = image.data().cpu().numpy()
-  if is_2d is True:
-    data = data.transpose(2, 1, 0)
-  itk = sitk.GetImageFromArray(
-    data, 
-    isVector=True if is_2d is True else False
-  )
-  itk.SetDirection(direction_out)
-  itk.SetSpacing(spacing_out)
-  itk.SetOrigin(origin_out)
-
-  return itk
+  return lib
 
 
-def itk_to_image(itk) -> Image:
-  tmp_size = itk.GetSize()
-  tmp_spacing = itk.GetSpacing()
-  tmp_origin = itk.GetOrigin()
-  tmp_axes = itk.GetDirection()
+lib = load_lib()
 
-  tmp_data = sitk.GetArrayFromImage(itk)
-
-  size = torch.ones(3)
-  spacing = torch.ones(3)
-  origin = torch.zeros(3)
-  axes = torch.zeros((3, 3))
-
-  L = len(tmp_size)
-  assert(L == 2 or L == 3)
-  is_2d = True if L == 2 else False
-  for i in range(L):
-    size[i] = tmp_size[i]
-    spacing[i] = tmp_spacing[i]
-    origin[i] = tmp_origin[i]
-    for j in range(L):
-      axes[i, j] = tmp_axes[i * L + j]
+class Image:
+  def __init__(self, dtype=np.float32, is_2d=False, ptr=None):
+    if ptr is None:
+      self.ptr = lib.image_new(
+        dtype_list[dtype], 
+        is_2d
+      )
+    else:
+      self.ptr = ptr
   
-  if L == 2:
-    axes[2, 2] = 1.0
+  def copy(self, copy=True):
+    return Image(lib.image_clone(self.ptr, copy))
+
+  @staticmethod
+  def new(height, width, depth, dtype=np.float32, is_2d=False):
+    return Image(
+      lib.image_new_owned(
+        height, width, depth, 
+        dtype_dict[dtype], is_2d
+      )
+    )
   
-  if len(tmp_data.shape) == 2:
-    tmp_data = tmp_data.reshape(tmp_data.shape[0], tmp_data.shape[1], -1)
+  def __del__(self):
+    lib.image_delete(self.ptr)
+  
+  def size(self):
+    ret = np.zeros((3), order='F', dtype=np.int)
+    lib.image_size(self.ptr, ret)
+    return ret
+  
+  def frame(self):
+    return Frame(ptr=lib.image_frame(self.ptr))
+  
+  def set_frame(self, frame: Frame):
+    lib.image_set_frame(self.ptr, frame.ptr)
 
-  frame = Frame()
-  frame.set_origin(origin)
-  frame.set_spacing(spacing)
-  frame.set_axes(axes)
-
-  image = Image(is_2d=is_2d)
-  image.set_frame(frame)
-  if is_2d is True:
-    tmp_data = tmp_data.transpose(2, 1, 0)
-  image.set_data(torch.from_numpy(tmp_data))
-
-  return image
+  def to_numpy(self):
+    size = self.size()
+    ret = np.zeros(
+      (size[0], size[1], size[2]),
+      dtype=self.dtype(), order='C'
+    )
+  

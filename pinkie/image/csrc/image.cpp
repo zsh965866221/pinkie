@@ -149,23 +149,21 @@ PixelType Image::dtype() const {
   return dtype_;
 }
 
-Image Image::cast(const PixelType& dtype) const {
-  if (dtype == dtype_) {
-    return Image(*this);
-  }
+Image* Image::cast(const PixelType& dtype) const {
   int height = size_(0);
   int width = size_(1);
   int depth = size_(2);
-  Image image(
+  Image* image = new Image(
     height,
     width,
     depth,
     dtype,
     is_2d_
   );
+  image->frame_ = frame_;
   CALL_DTYPE(dtype, type_dst, [&] {
   CALL_DTYPE(dtype_, type_src, [&] {
-    type_dst* data_dst = image.data<type_dst>();
+    type_dst* data_dst = image->data<type_dst>();
     type_src* data_src = this->data<type_src>();
     for (int i = 0; i < height * width * depth; i++) {
       data_dst[i] = static_cast<type_dst>(data_src[i]);
