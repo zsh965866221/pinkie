@@ -25,7 +25,7 @@ def load_lib():
     np.ctypeslib.ndpointer(
       dtype=ctypes.c_float,
       ndim=1,
-      flags='C_CONTIGUOUS'
+      flags='F_CONTIGUOUS'
     ),
   ]
   lib.frame_origin.restype = None
@@ -35,7 +35,7 @@ def load_lib():
     np.ctypeslib.ndpointer(
       dtype=ctypes.c_float,
       ndim=1,
-      flags='C_CONTIGUOUS'
+      flags='F_CONTIGUOUS'
     ),
   ]
   lib.frame_spacing.restype = None
@@ -45,7 +45,7 @@ def load_lib():
     np.ctypeslib.ndpointer(
       dtype=ctypes.c_float,
       ndim=2,
-      flags='C_CONTIGUOUS'
+      flags='F_CONTIGUOUS'
     ),
   ]
   lib.frame_axes.restype = None
@@ -56,7 +56,7 @@ def load_lib():
     np.ctypeslib.ndpointer(
       dtype=ctypes.c_float,
       ndim=1,
-      flags='C_CONTIGUOUS'
+      flags='F_CONTIGUOUS'
     ),
   ]
   lib.frame_axis.restype = None
@@ -66,7 +66,7 @@ def load_lib():
     np.ctypeslib.ndpointer(
       dtype=ctypes.c_float,
       ndim=1,
-      flags='C_CONTIGUOUS'
+      flags='F_CONTIGUOUS'
     ),
   ]
   lib.frame_set_origin.restype = None
@@ -76,7 +76,7 @@ def load_lib():
     np.ctypeslib.ndpointer(
       dtype=ctypes.c_float,
       ndim=1,
-      flags='C_CONTIGUOUS'
+      flags='F_CONTIGUOUS'
     ),
   ]
   lib.frame_set_spacing.restype = None
@@ -86,7 +86,7 @@ def load_lib():
     np.ctypeslib.ndpointer(
       dtype=ctypes.c_float,
       ndim=2,
-      flags='C_CONTIGUOUS'
+      flags='F_CONTIGUOUS'
     ),
   ]
   lib.frame_set_axes.restype = None
@@ -96,7 +96,7 @@ def load_lib():
     np.ctypeslib.ndpointer(
       dtype=ctypes.c_float,
       ndim=1,
-      flags='C_CONTIGUOUS'
+      flags='F_CONTIGUOUS'
     ),
     ctypes.c_uint,
   ]
@@ -107,12 +107,12 @@ def load_lib():
     np.ctypeslib.ndpointer(
       dtype=ctypes.c_float,
       ndim=1,
-      flags='C_CONTIGUOUS'
+      flags='F_CONTIGUOUS'
     ),
     np.ctypeslib.ndpointer(
       dtype=ctypes.c_float,
       ndim=1,
-      flags='C_CONTIGUOUS'
+      flags='F_CONTIGUOUS'
     ),
   ]
   lib.frame_world_to_voxel.restype = None
@@ -122,12 +122,12 @@ def load_lib():
     np.ctypeslib.ndpointer(
       dtype=ctypes.c_float,
       ndim=1,
-      flags='C_CONTIGUOUS'
+      flags='F_CONTIGUOUS'
     ),
     np.ctypeslib.ndpointer(
       dtype=ctypes.c_float,
       ndim=1,
-      flags='C_CONTIGUOUS'
+      flags='F_CONTIGUOUS'
     ),
   ]
   lib.frame_voxel_to_world.restype = None
