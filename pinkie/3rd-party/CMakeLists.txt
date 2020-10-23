@@ -22,7 +22,7 @@ if (USE_GFLAGS)
   add_subdirectory(gflags)
 endif()
 
-set(EIGEN_DIRS "eigen")
+set(EIGEN_DIRS "eigen-3.3.8")
 add_library(eigen INTERFACE)
 target_include_directories(
   eigen INTERFACE
