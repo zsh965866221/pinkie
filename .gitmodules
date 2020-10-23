@@ -4,7 +4,3 @@
 [submodule "pinkie/3rd-party/gflags"]
 	path = pinkie/3rd-party/gflags
 	url = https://github.com/gflags/gflags.git
-	
-[submodule "pinkie/3rd-party/eigen"]
-	path = pinkie/3rd-party/eigen
-	url = https://gitlab.com/libeigen/eigen.git

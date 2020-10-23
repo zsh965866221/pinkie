@@ -8,12 +8,8 @@
 using namespace pinkie;
 
 int main() {
-  int b[9] = {1,2,3,4,5,6,7,8,9};
-  auto s = Eigen::Map<Eigen::Matrix3i>(b);
-  for (int i = 0; i < 3; i++) {
-    for (int j = 0; j < 3; j++) {
-      std::cout << s(i, j) << std::endl;
-    }
-  }
+  CALL_DTYPE(PixelType_float32, type, [&] () {
+    std::cout << "A" << std::endl;
+  });
   return 0;
 }
