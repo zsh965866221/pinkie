@@ -1,8 +1,7 @@
 from setuptools import setup, find_packages
 
 reqiured_packages = [
-  'numpy',
-  'torch>=1.1.0'
+  'numpy'
 ]
 
 setup(
