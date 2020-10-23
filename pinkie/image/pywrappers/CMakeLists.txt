@@ -1,6 +1,6 @@
 add_library(
   pinkie_pyframe
-  SHARED
+  MODULE
   frame.h
   frame.cpp
 )

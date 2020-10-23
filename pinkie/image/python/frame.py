@@ -152,17 +152,17 @@ class Frame:
     lib.frame_delete(self.ptr)
   
   def origin(self):
-    ret = np.zeros((3), order='C', dtype=np.float32)
+    ret = np.zeros((3), order='F', dtype=np.float32)
     lib.frame_origin(self.ptr, ret)
     return ret
 
   def spacing(self):
-    ret = np.zeros((3), order='C', dtype=np.float32)
+    ret = np.zeros((3), order='F', dtype=np.float32)
     lib.frame_spacing(self.ptr, ret)
     return ret
   
   def axes(self):
-    ret = np.zeros((3, 3), order='C', dtype=np.float32)
+    ret = np.zeros((3, 3), order='F', dtype=np.float32)
     lib.frame_axes(self.ptr, ret)
     return ret
   
@@ -170,35 +170,35 @@ class Frame:
     assert index < 3
     assert index >= 0
 
-    ret = np.zeros((3), order='C', dtype=np.float32)
+    ret = np.zeros((3), order='F', dtype=np.float32)
     lib.frame_axis(self.ptr, ctypes.c_uint(index), ret)
     return ret
   
   def set_origin(self, data):
-    data = np.array(data, order='C', dtype=np.float32, copy=False)
+    data = np.array(data, order='F', dtype=np.float32, copy=False)
     lib.frame_set_origin(self.ptr, data)
   
   def set_spacing(self, data):
-    data = np.array(data, order='C', dtype=np.float32, copy=False)
+    data = np.array(data, order='F', dtype=np.float32, copy=False)
     lib.frame_set_spacing(self.ptr, data)
   
   def set_axes(self, data):
-    data = np.array(data, order='C', dtype=np.float32, copy=False)
+    data = np.array(data, order='F', dtype=np.float32, copy=False)
     lib.frame_set_axes(self.ptr, data)
   
   def set_axis(self, data, index):
-    data = np.array(data, order='C', dtype=np.float32, copy=False)
+    data = np.array(data, order='F', dtype=np.float32, copy=False)
     lib.frame_set_axis(self.ptr, data, ctypes.c_uint(index))
   
   def world_to_voxel(self, data):
-    data = np.array(data, order='C', dtype=np.float32, copy=False)
-    ret = np.zeros((3), order='C', dtype=np.float32)
+    data = np.array(data, order='F', dtype=np.float32, copy=False)
+    ret = np.zeros((3), order='F', dtype=np.float32)
     lib.frame_world_to_voxel(self.ptr, data, ret)
     return ret
 
   def voxel_to_world(self, data):
-    data = np.array(data, order='C', dtype=np.float32, copy=False)
-    ret = np.zeros((3), order='C', dtype=np.float32)
+    data = np.array(data, order='F', dtype=np.float32, copy=False)
+    ret = np.zeros((3), order='F', dtype=np.float32)
     lib.frame_voxel_to_world(self.ptr, data, ret)
     return ret
 
@@ -213,9 +213,9 @@ class Frame:
 
 if __name__ == '__main__':
   frame = Frame()
-  frame1 = frame.copy()
-  frame.set_origin([1,1,1])
+  frame.set_axes([
+    [1,2,3],
+    [4,5,6],
+    [7,8,9]
+  ])
   print(frame)
-  print(frame1)
-
-  print(frame.world_to_voxel([1,2,3]))
