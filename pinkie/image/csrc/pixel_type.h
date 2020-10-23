@@ -34,27 +34,25 @@ size_t pixeltype_byte_size(
 
 
 #define CALL_CASE_DTYPE(dtype, type, name, ...)                           \
-  case dtype: {                                                     \
-    typedef type name;                                       \
-    __VA_ARGS__();                                                  \
-    return;                                                         \
+  case dtype: {                                                           \
+    typedef type name;                                                    \
+    __VA_ARGS__();                                                        \
+    break;                                                                \
   }
 
 
 #define CALL_DTYPE(dtype, name, ...)                                      \
-[&] {                                                                     \
   switch (dtype) {                                                        \
-  CALL_CASE_DTYPE(PixelType_int8, char, name, __VA_ARGS__)                \
-  CALL_CASE_DTYPE(PixelType_uint8, unsigned char, name, __VA_ARGS__)      \
-  CALL_CASE_DTYPE(PixelType_int32, int, name, __VA_ARGS__)                \
-  CALL_CASE_DTYPE(PixelType_uint32, unsigned int, name, __VA_ARGS__)      \
-  CALL_CASE_DTYPE(PixelType_int64, long, name, __VA_ARGS__)               \
-  CALL_CASE_DTYPE(PixelType_uint64, unsigned long, name, __VA_ARGS__)     \
-  CALL_CASE_DTYPE(PixelType_float32, float, name, __VA_ARGS__)            \
-  CALL_CASE_DTYPE(PixelType_float64, double, name, __VA_ARGS__)           \
+  CALL_CASE_DTYPE(PixelType_int8, char, name, __VA_ARGS__);               \
+  CALL_CASE_DTYPE(PixelType_uint8, unsigned char, name, __VA_ARGS__);     \
+  CALL_CASE_DTYPE(PixelType_int32, int, name, __VA_ARGS__);               \
+  CALL_CASE_DTYPE(PixelType_uint32, unsigned int, name, __VA_ARGS__);     \
+  CALL_CASE_DTYPE(PixelType_int64, long, name, __VA_ARGS__);              \
+  CALL_CASE_DTYPE(PixelType_uint64, unsigned long, name, __VA_ARGS__);    \
+  CALL_CASE_DTYPE(PixelType_float32, float, name, __VA_ARGS__);           \
+  CALL_CASE_DTYPE(PixelType_float64, double, name, __VA_ARGS__);          \
   default:  assert(false);                                                \
-  }                                                                       \
-} ()
+  }                                                                       
 
 
 } // namespace pinkie

@@ -149,7 +149,7 @@ PixelType Image::dtype() const {
   return dtype_;
 }
 
-Image* Image::cast(const PixelType& dtype) const {
+const Image* Image::cast(const PixelType& dtype) const {
   int height = size_(0);
   int width = size_(1);
   int depth = size_(2);
@@ -161,14 +161,15 @@ Image* Image::cast(const PixelType& dtype) const {
     is_2d_
   );
   image->frame_ = frame_;
-  CALL_DTYPE(dtype, type_dst, [&] {
-  CALL_DTYPE(dtype_, type_src, [&] {
+  CALL_DTYPE(dtype, type_dst, [&]() {
+  CALL_DTYPE(dtype_, type_src, [&]() {
     type_dst* data_dst = image->data<type_dst>();
-    type_src* data_src = this->data<type_src>();
+    type_src* data_src = static_cast<type_src*>(data_);
     for (int i = 0; i < height * width * depth; i++) {
       data_dst[i] = static_cast<type_dst>(data_src[i]);
     }
-  });});
+  });
+  });
   return image;
 }
 
@@ -177,11 +178,11 @@ void Image::cast_(const PixelType& dtype) {
     return;
   }
   dtype_ = dtype;
-  CALL_DTYPE(dtype, type_dst, [&] {
-  CALL_DTYPE(dtype_, type_src, [&] {
-    type_src* data_src = this->data<type_src>();
+  CALL_DTYPE(dtype, type_dst, [&]() {
+  CALL_DTYPE(dtype_, type_src, [&]() {
+    type_src* data_src = static_cast<type_src*>(data_);
     this->update_buffer();
-    type_dst* data_dst = this->data<type_dst>();
+    type_dst* data_dst = static_cast<type_dst*>(data_);
     for (int i = 0; i < size_(0) * size_(1) * size_(2); i++) {
       data_dst[i] = static_cast<type_dst>(data_src[i]);
     }

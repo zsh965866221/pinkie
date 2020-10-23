@@ -8,8 +8,11 @@
 using namespace pinkie;
 
 int main() {
-  CALL_DTYPE(PixelType_float32, type, [&] () {
-    std::cout << "A" << std::endl;
-  });
+  CALL_DTYPE(PixelType_float32, type, [&]() {
+  CALL_DTYPE(PixelType_int32, type1, [&]() {
+    type a;
+    type1 b;
+    std::cout << "B" << std::endl;
+  });});
   return 0;
 }

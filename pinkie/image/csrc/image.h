@@ -34,6 +34,10 @@ public:
   T* data() const {
     return static_cast<T*>(data_);
   }
+  template<typename T>
+  T* data() {
+    return static_cast<T*>(data_);
+  }
   void set_data(
     void* data, 
     const Eigen::Vector3i& size, 
@@ -64,7 +68,7 @@ public:
 
 public:
   PixelType dtype() const;
-  Image* cast(const PixelType& dtype) const;
+  const Image* cast(const PixelType& dtype) const;
   void cast_(const PixelType& dtype);
 
 private:
