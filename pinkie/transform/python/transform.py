@@ -72,6 +72,7 @@ def resample_trilinear(
 
 if __name__ == '__main__':
   from pinkie.image.python.io import read_image, write_image
+  import time
 
   path = r'E:\work\git\test.jpg'
   path_out = r'E:\work\git\test_out.jpg'
@@ -94,7 +95,10 @@ if __name__ == '__main__':
 
   print(image)
 
+  time_start = time.time()
   image_resampled = resample_trilinear(image, frame, size)
+  time_end = time.time()
+  print(time_end - time_start)
   print(image_resampled)
   write_image(image_resampled, path_out)
 
