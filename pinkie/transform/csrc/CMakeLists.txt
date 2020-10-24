@@ -18,7 +18,5 @@ add_library(
 )
 target_link_libraries(
   pinkie_transform
-  ${TORCH_LIBRARIES}
-  ${EXTRA_LIBS}
   pinkie_image
 )

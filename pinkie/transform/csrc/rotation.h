@@ -1,20 +1,18 @@
 #ifndef PINKIE_TRANSFORM_CSRC_ROTATION_H
 #define PINKIE_TRANSFORM_CSRC_ROTATION_H
 
-#include <torch/torch.h>
+#include <Eigen/Eigen>
 
 namespace pinkie {
-namespace transform {
 
 /** \brief comate rotation matrix with rotation axis and theta
  * \ref https://en.wikipedia.org/wiki/Rotation_matrix
 */
-torch::Tensor rotate(
-  const torch::Tensor& axis, 
+Eigen::Matrix3f rotate(
+  const Eigen::Vector3f& axis, 
   const float theta_radian
 );
 
-} // namespace transform
 } // namespace pinkie
 
 #endif // PINKIE_TRANSFORM_CSRC_ROTATION_H

@@ -3,146 +3,195 @@
 namespace pinkie {
 
 Image::Image(
-  const int& height,
-  const int& width,
-  const int& depth,
-  const torch::ScalarType dtype,
-  const torch::Device device,
+  const PixelType dtype,
   const bool _is_2d
-) {
-  assert(
-    (height >= 0) &&
-    (width >= 0) &&
-    (depth >= 0)
-  );
-  auto options =
-    torch::TensorOptions()
-    .dtype(dtype)
-    .device(device);
-  data_ = torch::zeros({depth, height, width,}, options);
-  size_ = torch::tensor({depth, height, width}, device);
-  frame_ = Frame();
-  frame_.to_(device);
-  is_2d_ = _is_2d;
+):
+  data_(nullptr),
+  is_2d_(_is_2d), 
+  dtype_(dtype),
+  owned_(false)
+{
+  size_.setZero();
 }
 
-Image::Image(const bool _is_2d): Image(0, 0, 0) {
-  is_2d_ = _is_2d;
-}
-
-Image::Image(const Image& image) {
-  data_ = image.data_;
+Image::Image(const Image& image, bool copy) {
   frame_ = image.frame_;
   size_ = image.size_;
   is_2d_ = image.is_2d_;
+  dtype_ = image.dtype_;
+  if (copy == true) {
+    clear_memory();
+    size_t byte_size = update_buffer();
+    memcpy(data_, image.data_, byte_size);
+  } else {
+    data_ = image.data_;
+    owned_ = false;
+  }
 }
 
+Image::Image(
+  const int& height,
+  const int& width,
+  const int& depth,
+  const PixelType dtype,
+  const bool _is_2d
+) {
+  size_(0) = height;
+  size_(1) = width;
+  size_(2) = depth;
+  is_2d_ = _is_2d;
+  dtype_ = dtype;
 
-torch::Device Image::device() const {
-  return data_.device();
+  update_buffer();
 }
 
-torch::ScalarType Image::dtype() const {
-  return data_.scalar_type();
+Image::~Image() {
+  clear_memory();
 }
 
-Frame Image::frame() const {
+void Image::clear_memory() {
+  if (owned_ == true && data_ != nullptr) {
+    free(data_);
+    data_ = nullptr;
+    owned_ = false;
+  }
+}
+
+size_t Image::update_buffer() {
+  owned_ = true;
+  size_t byte_size = pixeltype_byte_size(dtype_, size_);
+  data_ = malloc(byte_size);
+  return byte_size;
+}
+
+const Eigen::Vector3i& Image::size() const {
+  return size_;
+}
+
+const Frame& Image::frame() const {
   return frame_;
 }
 
 void Image::set_frame(const Frame& frame) {
   frame_ = frame;
-  if (frame_.device() != data_.device()) {
-    frame_.to_(data_.device());
+}
+
+void Image::set_data(
+  void* data, 
+  const int height, 
+  const int width,
+  const int depth,
+  const PixelType dtype, 
+  bool _is_2d,
+  bool copy
+) {
+  assert(data != nullptr);
+  size_(0) = height;
+  size_(1) = width;
+  size_(2) = depth;
+  dtype_ = dtype;
+  is_2d_ = _is_2d;
+  if (copy == true) {
+    clear_memory();
+    size_t byte_size = update_buffer();
+    memcpy(data_, data, byte_size);
+  } else {
+    owned_ = false;
   }
 }
 
-void Image::to_(const torch::Device& device) {
-  if (device != data_.device()) {
-    data_ = data_.to(device);
-    frame_.to_(device);
-    size_ = size_.to(device);
-  }
+void Image::set_data(
+  void* data, 
+  const Eigen::Vector3i& size, 
+  const PixelType dtype,
+  bool _is_2d,
+  bool copy
+) {
+  set_data(
+    data,
+    size(0),
+    size(1),
+    size(2),
+    dtype,
+    _is_2d,
+    copy
+  );
 }
 
-Image Image::to(const torch::Device& device) const {
-  Image image;
-  image.data_ = data_.to(device);
-  image.frame_.to_(device);
-  image.size_ = size_.to(device);
-  return image;
+void Image::allocate(
+  const int height,
+  const int width,
+  const int depth,
+  const PixelType dtype
+) {
+  dtype_ = dtype;
+  size_(0) = height;
+  size_(1) = width;
+  size_(2) = depth;
+  clear_memory();
+  update_buffer();
 }
 
-Image Image::cast(const torch::ScalarType& type) const {
-  Image image;
-  image.data_ = data_.to(type);
-  image.frame_ = frame_;
-  image.size_ = size_;
-  return image;
-}
-
-void Image::cast_(const torch::ScalarType& type) {
-  if (data_.scalar_type() != type) {
-    data_ = data_.to(type);
-  }
-}
-
-const torch::Tensor& Image::data() const {
-  return data_;
-}
-
-void Image::set_data(const torch::Tensor& data) {
-  assert(data.dim() == 3);
-  data_ = data;
-  if (frame_.device() != data_.device()) {
-    frame_.to_(data_.device());
-    size_ = size_.to(data.device());
-  }
-  size_[0] = data.size(2);
-  size_[1] = data.size(1);
-  size_[2] = data.size(0);
-}
-
-torch::Tensor Image::size() const {
-  return size_;
+void Image::set_zero() {
+  size_t byte_size = pixeltype_byte_size(dtype_, size_);
+  memset(data_, 0x00, byte_size);
 }
 
 bool Image::is_2d() const {
   return is_2d_;
 }
 
-Image Image::clone() const {
-  Image image;
-  image.frame_ = frame_.clone();
-  image.data_ = data_.clone();
-  image.size_ = size_.clone();
-  image.is_2d_ = is_2d_;
+void Image::set_2d(bool p) {
+  is_2d_ = p;
+}
+
+PixelType Image::dtype() const {
+  return dtype_;
+}
+
+Image* Image::cast(const PixelType& dtype) const {
+  int height = size_(0);
+  int width = size_(1);
+  int depth = size_(2);
+  Image* image = new Image(
+    height,
+    width,
+    depth,
+    dtype,
+    is_2d_
+  );
+  image->frame_ = frame_;
+  CALL_DTYPE(dtype, type_dst, [&]() {
+  CALL_DTYPE(dtype_, type_src, [&]() {
+    type_dst* data_dst = image->data<type_dst>();
+    type_src* data_src = static_cast<type_src*>(data_);
+    for (int i = 0; i < height * width * depth; i++) {
+      data_dst[i] = static_cast<type_dst>(data_src[i]);
+    }
+  });
+  });
   return image;
 }
 
-torch::Tensor Image::origin() const {
-  return frame_.origin();
+void Image::cast_(const PixelType& dtype) {
+  if (dtype == dtype_) {
+    return;
+  }
+  dtype_ = dtype;
+  CALL_DTYPE(dtype, type_dst, [&]() {
+  CALL_DTYPE(dtype_, type_src, [&]() {
+    type_src* data_src = static_cast<type_src*>(data_);
+    this->update_buffer();
+    type_dst* data_dst = static_cast<type_dst*>(data_);
+    for (int i = 0; i < size_(0) * size_(1) * size_(2); i++) {
+      data_dst[i] = static_cast<type_dst>(data_src[i]);
+    }
+    free(data_src);
+  });});
 }
 
-torch::Tensor Image::spacing() const {
-  return frame_.spacing();
+size_t Image::bytes_size() const {
+  return pixeltype_byte_size(dtype_, size_);
 }
-
-torch::Tensor Image::axes() const {
-  return frame_.axes();
-}
-
-torch::Tensor Image::axis(int index) const {
-  return frame_.axis(index);
-}
-
-torch::Tensor Image::world_to_voxel(const torch::Tensor& world) const {
-  return frame_.world_to_voxel(world);
-}
-
-torch::Tensor Image::voxel_to_world(const torch::Tensor& voxel) const {
-  return frame_.voxel_to_world(voxel);
-}
-
 
 } // namespace pinkie

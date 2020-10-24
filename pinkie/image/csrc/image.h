@@ -2,71 +2,89 @@
 #define PINKIE_IMAGE_CSRC_IMAGE_H
 
 #include "pinkie/image/csrc/frame.h"
-
-#include <string>
-
-#include <torch/torch.h>
+#include "pinkie/image/csrc/pixel_type.h"
 
 namespace pinkie {
 
 class Image {
 public:
   Image(
+    const PixelType dtype = PixelType_float32,
     const bool _is_2d = false
   );
-  Image(const Image& image);
+  Image(const Image& image, bool copy = true);
   Image(
     const int& height,
     const int& width,
     const int& depth,
-    const torch::ScalarType dtype = torch::kFloat,
-    const torch::Device device = torch::Device(torch::kCPU),
+    const PixelType dtype = PixelType_float32,
     const bool _is_2d = false
   );
-  virtual ~Image() {}
+  virtual ~Image();
 
 public:
-  torch::Tensor size() const;
+  const Eigen::Vector3i& size() const;
 
 public:
-  Frame frame() const;
+  const Frame& frame() const;
   void set_frame(const Frame& frame);
 
 public:
-  const torch::Tensor& data() const;
-  void set_data(const torch::Tensor& data);
+  template<typename T>
+  T* data() const {
+    return static_cast<T*>(data_);
+  }
+  template<typename T>
+  T* data() {
+    return static_cast<T*>(data_);
+  }
+  void set_data(
+    void* data, 
+    const Eigen::Vector3i& size, 
+    const PixelType dtype,
+    bool _is_2d = false,
+    bool copy = true
+  );
+  void set_data(
+    void* data, 
+    const int height, 
+    const int width,
+    const int depth,
+    const PixelType dtype, 
+    bool _is_2d = false,
+    bool copy = true
+  );
+  void set_zero();
+  void allocate(
+    const int height,
+    const int width,
+    const int depth,
+    const PixelType dtype
+  );
 
 public:
-  Image to(const torch::Device& device) const;
-  void to_(const torch::Device& device);
-
-public:
-  torch::Device device() const;
-  torch::ScalarType dtype() const;
   bool is_2d() const;
+  void set_2d(bool p);
 
 public:
-  Image clone() const;
+  PixelType dtype() const;
+  Image* cast(const PixelType& dtype) const;
+  void cast_(const PixelType& dtype);
 
 public:
-  Image cast(const torch::ScalarType& type) const;
-  void cast_(const torch::ScalarType& type);
-
-public:
-  torch::Tensor origin() const;
-  torch::Tensor spacing() const;
-  torch::Tensor axes() const;
-  torch::Tensor axis(int index) const;
-
-public:
-  torch::Tensor world_to_voxel(const torch::Tensor& world) const;
-  torch::Tensor voxel_to_world(const torch::Tensor& voxel) const;
+  size_t bytes_size() const;
 
 private:
-  torch::Tensor data_;
-  torch::Tensor size_;
+  void clear_memory();
+  size_t update_buffer();
+
+private:
+  void* data_;
+  Eigen::Vector3i size_;
   Frame frame_;
   bool is_2d_;
+  PixelType dtype_;
+  bool owned_;
 };
 
 } // namespace pinkie

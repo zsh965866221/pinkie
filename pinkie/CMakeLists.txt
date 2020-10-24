@@ -6,12 +6,15 @@ project(pinkie)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(USE_CUDA "USE CUDA, OFF Default" OFF)
+
 # set CUDA
-find_package(CUDA REQUIRED)
-enable_language(CUDA)
-set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
-set(CMAKE_CUDA_STANDARD_REQUIRED ON)
-add_definitions(-D_GLIBCXX_USE_CXX11_ABI=0)
+if (USE_CUDA)
+  find_package(CUDA REQUIRED)
+  enable_language(CUDA)
+  set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
+  set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+endif()
 
 IF(NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
@@ -58,23 +61,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/../
 )
 
-# tools
-include(
-  tools/FindPythonLibs.cmake
-)
-add_library(pythonlibs INTERFACE)
-target_include_directories(
-  pythonlibs INTERFACE
-  ${PYTHON_INCLUDE_DIRS}
-)
-
-# torch
-set(CMAKE_PREFIX_PATH ${TORCH_INSTALL_DIR})
-message("CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
-find_package(Torch REQUIRED)
-find_library(TORCH_PYTHON_LIBRARY torch_python PATHS "${TORCH_INSTALL_PREFIX}/lib")
-find_library(TORCH_C10_LIBRARY c10 PATHS "${TORCH_INSTALL_PREFIX}/lib")
-
 # add OPENMP
 find_package(OpenMP)
 if (OPENMP_FOUND)
@@ -87,9 +73,6 @@ endif()
 # 3rd-party
 set(DIR_THIRD_PARTY 3rd-party)
 add_subdirectory(${DIR_THIRD_PARTY})
-
-# # add test
-# add_subdirectory(test/csrc)
 
 # add sub
 option(BUILD_TEST "Build test, OFF Default" ON)

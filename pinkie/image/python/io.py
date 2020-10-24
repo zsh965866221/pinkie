@@ -1,24 +1,32 @@
-import pinkie
-import torch
-from pinkie_image_python import Frame, Image
+# coding=utf-8
 
 import numpy as np
 import os
 import SimpleITK as sitk
 
-from pinkie.image.python.image import itk_to_image, image_to_itk
+from pinkie.image.python.image_itk import itk_to_image, image_to_itk
 
 
 def read_image(path, dtype=None):
   if dtype is None:
     dtype = sitk.sitkUnknown
   else:
-    if dtype == np.uint8 or dtype == torch.uint8:
+    if dtype == np.int8:
+      dtype = sitk.sitkInt8
+    if dtype == np.uint8:
       dtype = sitk.sitkUInt8
-    elif dtype == np.int32 or dtype == torch.int32:
+    elif dtype == np.int32:
       dtype = sitk.sitkInt32
-    elif dtype == np.float or dtype == torch.float:
+    elif dtype == np.uint32:
+      dtype = sitk.sitkUInt32
+    elif dtype == np.int64:
+      dtype = sitk.sitkInt64
+    elif dtype == np.uint64:
+      dtype = sitk.sitkUInt64
+    elif dtype == np.float32:
       dtype = sitk.sitkFloat32
+    elif dtype == np.float64:
+      dtype = sitk.sitkFloat64
     else:
       raise f"Unsupportted dtype: {dtype}"
 
@@ -47,23 +55,13 @@ def write_image(image, path, compression=True):
 
 
 
-
 if __name__ == "__main__":
-  path = '/data2/home/shuheng_zhang/AI01_0001_01_L_diast_best_0.50mm.mhd'
+  path = r'E:\work\git\test.jpg'
+  path_out = r'E:\work\git\test_out.png'
   image, _ = read_image(path)
   print(image)
-  write_image(image, '/data2/home/shuheng_zhang/out.mhd')
-
-  path = '/data2/home/shuheng_zhang/test.png'
-  image, _ = read_image(path)
-  print(image)
-  write_image(image, '/data2/home/shuheng_zhang/test_out.jpeg')
-
-  path = '/data2/home/shuheng_zhang/test_out.jpeg'
-  image, _ = read_image(path)
-  data = image.data()
-  image.set_data(data[:, :, :1])
-  print(image)
-  write_image(image, '/data2/home/shuheng_zhang/test_out_gray.jpeg')
+  data = image.to_numpy()
+  image.set_data(data[:1,:,:])
+  write_image(image, path_out)
 
 

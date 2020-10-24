@@ -3,6 +3,8 @@ file(
   PINKIE_IMAGE_SRC
   frame.h
   frame.cpp
+  pixel_type.h
+  pixel_type.cpp
   image.h
   image.cpp
 )
@@ -18,6 +20,6 @@ add_library(
 )
 target_link_libraries(
   pinkie_image
-  ${TORCH_LIBRARIES}
+  eigen
   ${EXTRA_LIBS}
 )

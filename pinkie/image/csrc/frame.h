@@ -2,8 +2,7 @@
 #define PINKIE_IMAGE_CSRC_FRAME_H
 
 #include <string>
-
-#include <torch/torch.h>
+#include <Eigen/Eigen>
 
 namespace pinkie {
 
@@ -14,35 +13,28 @@ public:
   virtual ~Frame() {}
 
 public:
-  torch::Tensor origin() const;
-  torch::Tensor spacing() const;
-  torch::Tensor axes() const;
-  torch::Tensor axis(int index) const;
+  void set_origin(const Eigen::Vector3f& origin);
+  void set_spacing(const Eigen::Vector3f& spacing);
+  void set_axes(const Eigen::Matrix3f& axes);
+  void set_axis(const Eigen::Vector3f& axis, const size_t index);
 
 public:
-  void set_origin(const torch::Tensor& origin);
-  void set_spacing(const torch::Tensor& spacing);
-  void set_axes(const torch::Tensor& axes);
-  void set_axis(const torch::Tensor& axis, const int index);
+  const Eigen::Vector3f& origin() const;
+  const Eigen::Vector3f& spacing() const;
+  const Eigen::Matrix3f& axes() const;
+  Eigen::Vector3f axis(const size_t index) const;
 
 public:
-  Frame to(const torch::Device& device) const;
-  void to_(const torch::Device& device);
-
-public: 
- Frame clone() const;
+  void reset();
 
 public:
-  torch::Device device() const;
-
-public:
-  torch::Tensor world_to_voxel(const torch::Tensor& world) const;
-  torch::Tensor voxel_to_world(const torch::Tensor& voxel) const;
+  Eigen::Vector3f world_to_voxel(const Eigen::Vector3f& world) const;
+  Eigen::Vector3f voxel_to_world(const Eigen::Vector3f& voxel) const;
 
 private:
-  torch::Tensor origin_;
-  torch::Tensor spacing_;
-  torch::Tensor axes_;
+  Eigen::Vector3f origin_;
+  Eigen::Vector3f spacing_;
+  Eigen::Matrix3f axes_;
 };
 
 } // namespace pinkie
