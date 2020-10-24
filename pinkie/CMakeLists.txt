@@ -77,4 +77,4 @@ add_subdirectory(${DIR_THIRD_PARTY})
 # add sub
 option(BUILD_TEST "Build test, OFF Default" ON)
 add_subdirectory(image)
-# add_subdirectory(transform)
+add_subdirectory(transform)
