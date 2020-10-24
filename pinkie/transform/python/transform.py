@@ -71,13 +71,30 @@ def resample_trilinear(
 
 
 if __name__ == '__main__':
-  axis = np.array([0, 0, 1])
-  theta = 90.0 / 180.0 * np.pi
-  print(rotate(axis, theta))
+  from pinkie.image.python.io import read_image, write_image
 
-  image = Image.from_numpy(
-    np.ones((2,2,2))
-  )
-  image = resample_trilinear(image, image.frame(), [3,3,2])
+  path = r'E:\work\git\test.jpg'
+  path_out = r'E:\work\git\test_out.jpg'
+
+  image, _ = read_image(path)
+  size = image.size()
+  spacing = image.frame().spacing()
+  frame = image.frame().copy()
+
+  rotate_axis = np.array([0.0, 0.0, 1.0])
+  rotate_matrix = rotate(rotate_axis, 30.0 / 180.0 * np.pi)
+  origin = frame.origin()
+  spacing = spacing * 3 / 2
+  for i in range(3):
+    axis = np.dot(rotate_matrix, image.frame().axis(i))
+    frame.set_axis(axis, i)
+  frame.set_origin(origin)
+  frame.set_spacing(spacing)
+
   print(image)
-  print(image.to_numpy())
+  print(frame)
+
+  image_resampled = resample_trilinear(image, frame, size)
+  write_image(image_resampled, path_out)
+
+

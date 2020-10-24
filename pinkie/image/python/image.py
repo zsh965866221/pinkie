@@ -131,7 +131,7 @@ class Image:
   def to_numpy(self):
     size = self.size()
     ret = np.zeros(
-      (size[0], size[1], size[2]),
+      (size[2], size[1], size[0]),
       dtype=self.dtype(), order='C'
     )
     lib.image_data(self.ptr, ret)
@@ -142,9 +142,9 @@ class Image:
     lib.image_set_data(
       self.ptr, 
       data,
-      data.shape[0],
-      data.shape[1],
       data.shape[2],
+      data.shape[1],
+      data.shape[0],
       dtype_dict[data.dtype.type],
       self.is_2d(),
       True
@@ -157,9 +157,9 @@ class Image:
     lib.image_set_data(
       image.ptr, 
       data,
-      data.shape[0],
-      data.shape[1],
       data.shape[2],
+      data.shape[1],
+      data.shape[0],
       dtype_dict[data.dtype.type],
       is_2d,
       True
