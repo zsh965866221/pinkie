@@ -13,6 +13,13 @@ PINKIE_API void transform_rotate(
   float* out
 );
 
+PINKIE_API void* transform_resample_trilinear(
+  void* src_image_ptr,
+  void* dst_frame_ptr,
+  void* dst_size_ptr,
+  float padding_value
+);
+
 #ifdef __cplusplus
 }
 #endif

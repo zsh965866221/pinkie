@@ -2,6 +2,7 @@
 
 import ctypes
 import numpy as np
+import pinkie
 
 from pinkie.image.python.frame import Frame
 from pinkie.image.python.pixel_type import dtype_dict, dtype_list
@@ -137,10 +138,12 @@ class Image:
     lib.image_data(self.ptr, ret)
     return ret
   
-  def from_numpy(self, data, is_2d=False):
+  @staticmethod
+  def from_numpy(data, is_2d=False):
     data = np.array(data, order='C', copy=False)
+    image = Image(is_2d=is_2d)
     lib.image_set_data(
-      self.ptr, 
+      image.ptr, 
       data,
       data.shape[0],
       data.shape[1],
@@ -149,6 +152,7 @@ class Image:
       is_2d,
       True
     )
+    return image
 
   def set_zero(self):
     lib.image_set_zero(self.ptr)

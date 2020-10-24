@@ -3,6 +3,8 @@ file(
   PINKIE_TRANSFORM_SRC
   rotation.h
   rotation.cpp
+  resample.h
+  resample.cpp
 )
 source_group(
   pinkie_transform 

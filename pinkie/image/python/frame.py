@@ -2,6 +2,7 @@
 
 import ctypes
 import numpy as np
+import pinkie
 
 from pinkie.utils.python.ctypes import find_dll
 

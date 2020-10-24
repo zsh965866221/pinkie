@@ -14,5 +14,7 @@ int main() {
     type1 b;
     std::cout << "B" << std::endl;
   });});
+
+  auto a = Eigen::Vector3i(1,2,3);
   return 0;
 }
