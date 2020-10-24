@@ -80,3 +80,4 @@ if __name__ == '__main__':
   )
   image = resample_trilinear(image, image.frame(), [3,3,2])
   print(image)
+  print(image.to_numpy())

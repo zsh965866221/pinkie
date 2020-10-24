@@ -16,7 +16,7 @@ PINKIE_API void transform_rotate(
 PINKIE_API void* transform_resample_trilinear(
   void* src_image_ptr,
   void* dst_frame_ptr,
-  void* dst_size_ptr,
+  int* dst_size_ptr,
   float padding_value
 );
 
