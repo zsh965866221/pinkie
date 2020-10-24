@@ -1,6 +1,7 @@
 #include "pinkie/image/pywrappers/image.h"
 #include "pinkie/image/csrc/image.h"
 
+
 using namespace pinkie;
 
 void* image_new(int dtype, bool is_2d) {
@@ -61,10 +62,19 @@ void image_set_frame(void* ptr, void* in) {
   image->set_frame(*frame);
 }
 
-void* image_data(void* ptr) {
+void image_data(void* ptr, void* out) {
   assert(ptr != nullptr);
+  assert(out != nullptr);
   Image* image = static_cast<Image*>(ptr);
-  return image->data<void>();
+  CALL_DTYPE(
+    image->dtype(), type,
+    [&]() {
+      type* dst_ptr = static_cast<type*>(out);
+      type* src_ptr = image->data<type>();
+      size_t bytes_size = image->bytes_size();
+      memcpy(dst_ptr, src_ptr, bytes_size);
+    } 
+  );
 }
 
 void image_set_data(
@@ -106,13 +116,15 @@ void image_set_2d(void* ptr, bool p) {
 int image_dtype(void* ptr) {
   assert(ptr != nullptr);
   Image* image = static_cast<Image*>(ptr);
-  return static_cast<PixelType>(image->dtype());
+  int dtype = static_cast<int>(image->dtype());
+  return dtype;
 }
 
 void* image_cast(void* ptr, int dtype) {
   assert(ptr != nullptr);
   Image* image = static_cast<Image*>(ptr);
-  return image->cast(static_cast<PixelType>(dtype));
+  Image* new_image = image->cast(static_cast<PixelType>(dtype));
+  return static_cast<void*>(new_image);
 }
 
 void image_cast_(void* ptr, int dtype) {

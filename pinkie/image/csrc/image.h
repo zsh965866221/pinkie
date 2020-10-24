@@ -68,8 +68,11 @@ public:
 
 public:
   PixelType dtype() const;
-  const Image* cast(const PixelType& dtype) const;
+  Image* cast(const PixelType& dtype) const;
   void cast_(const PixelType& dtype);
+
+public:
+  size_t bytes_size() const;
 
 private:
   void clear_memory();

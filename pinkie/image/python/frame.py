@@ -139,7 +139,7 @@ lib = load_lib()
 
 class Frame:
   def __init__(self, ptr):
-    if frame is None:
+    if ptr is None:
       self.ptr = lib.frame_new()
     else:
       self.ptr = ptr

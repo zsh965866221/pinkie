@@ -149,7 +149,7 @@ PixelType Image::dtype() const {
   return dtype_;
 }
 
-const Image* Image::cast(const PixelType& dtype) const {
+Image* Image::cast(const PixelType& dtype) const {
   int height = size_(0);
   int width = size_(1);
   int depth = size_(2);
@@ -188,6 +188,10 @@ void Image::cast_(const PixelType& dtype) {
     }
     free(data_src);
   });});
+}
+
+size_t Image::bytes_size() const {
+  return pixeltype_byte_size(dtype_, size_);
 }
 
 } // namespace pinkie
