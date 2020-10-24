@@ -82,19 +82,20 @@ if __name__ == '__main__':
   frame = image.frame().copy()
 
   rotate_axis = np.array([0.0, 0.0, 1.0])
-  rotate_matrix = rotate(rotate_axis, 30.0 / 180.0 * np.pi)
-  origin = frame.origin()
+  rotate_matrix = rotate(rotate_axis, 60.0 / 180.0 * np.pi)
+  origin = frame.origin() + size / 2.0 * frame.spacing()
   spacing = spacing * 3 / 2
   for i in range(3):
     axis = np.dot(rotate_matrix, image.frame().axis(i))
     frame.set_axis(axis, i)
+    origin -= (axis * size[i] / 2 * spacing[i])
   frame.set_origin(origin)
   frame.set_spacing(spacing)
 
   print(image)
-  print(frame)
 
   image_resampled = resample_trilinear(image, frame, size)
+  print(image_resampled)
   write_image(image_resampled, path_out)
 
 

@@ -22,9 +22,9 @@ Image* resample_trilinear(
 
   Eigen::Vector3f direction_x = src_axes * dst_frame.axis(0);
   direction_x = direction_x.array() / src_spacing.array() * dst_spacing[0];
-  Eigen::Vector3f direction_y = src_axes * dst_frame.axis(0);
+  Eigen::Vector3f direction_y = src_axes * dst_frame.axis(1);
   direction_y = direction_y.array() / src_spacing.array() * dst_spacing[0];
-  Eigen::Vector3f direction_z = src_axes * dst_frame.axis(0);
+  Eigen::Vector3f direction_z = src_axes * dst_frame.axis(2);
   direction_z = direction_z.array() / src_spacing.array() * dst_spacing[0];
 
   Image* dst_image = new Image(
