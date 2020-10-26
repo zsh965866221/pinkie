@@ -23,9 +23,9 @@ Image* resample_trilinear(
   Eigen::Vector3f direction_x = src_axes * dst_frame.axis(0);
   direction_x = direction_x.array() / src_spacing.array() * dst_spacing[0];
   Eigen::Vector3f direction_y = src_axes * dst_frame.axis(1);
-  direction_y = direction_y.array() / src_spacing.array() * dst_spacing[0];
+  direction_y = direction_y.array() / src_spacing.array() * dst_spacing[1];
   Eigen::Vector3f direction_z = src_axes * dst_frame.axis(2);
-  direction_z = direction_z.array() / src_spacing.array() * dst_spacing[0];
+  direction_z = direction_z.array() / src_spacing.array() * dst_spacing[2];
 
   Image* dst_image = new Image(
     dst_size(0),
@@ -36,7 +36,7 @@ Image* resample_trilinear(
   );
   dst_image->set_frame(dst_frame);
 
-  Eigen::Vector3f origin = (src_axes * (dst_origin - src_origin)).array() / src_spacing.array();
+  Eigen::Vector3f origin = src_image.frame().world_to_voxel(dst_origin);
 
   if (src_image.is_2d() == true) {
     direction_z =  Eigen::Vector3f(0.0, 0.0, 1.0);

@@ -55,7 +55,7 @@ void Frame::reset() {
 }
 
 Eigen::Vector3f Frame::world_to_voxel(const Eigen::Vector3f& world) const {
-  return (axes_ * (world - origin_)).array() * spacing_.array();
+  return (axes_ * (world - origin_)).array() / spacing_.array();
 }
 
 Eigen::Vector3f Frame::voxel_to_world(const Eigen::Vector3f& voxel) const {

@@ -74,17 +74,22 @@ if __name__ == '__main__':
   from pinkie.image.python.io import read_image, write_image
   import time
 
-  path = r'E:\work\git\test.jpg'
-  path_out = r'E:\work\git\test_out.jpg'
+  path = r'E:\work\git\t1.nii.gz'
+  path_out = r'E:\work\git\out.mhd'
+
+  # path = r'E:\work\git\test.jpg'
+  # path_out = r'E:\work\git\test_out.jpg'
 
   image, _ = read_image(path)
+  data = image.to_numpy()
+
   size = image.size()
-  spacing = image.spacing() * 3 / 2
+  spacing = image.spacing() * 3.0 / 2.0
   frame = image.frame().copy()
 
-  rotate_axis = np.array([0.0, 0.0, 1.0])
+  rotate_axis = np.array([0.0, 1.0, 0.0])
   rotate_matrix = rotate(rotate_axis, 45.0 / 180.0 * np.pi)
-  origin = image.origin() + image.size() / 2.0 * image.spacing()
+  origin = image.voxel_to_world(image.size() / 2.0)
   
   for i in range(3):
     axis = np.dot(rotate_matrix, image.axis(i))

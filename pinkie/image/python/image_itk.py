@@ -67,10 +67,6 @@ def itk_to_image(itk) -> Image:
   
   if len(tmp_data.shape) == 2:
     tmp_data = tmp_data.reshape(tmp_data.shape[0], tmp_data.shape[1], -1)
-  
-  size[0] = tmp_data.shape[0]
-  size[1] = tmp_data.shape[1]
-  size[2] = tmp_data.shape[2]
 
   frame = Frame()
   frame.set_origin(origin)
