@@ -31,7 +31,7 @@ def read_image(path, dtype=None):
 
   image = itk_to_image(image_itk)
   
-  return image, tags
+  return image, tags, image_itk
 
 
 def write_image(image, path, compression=True):
@@ -43,7 +43,7 @@ def write_image(image, path, compression=True):
 if __name__ == "__main__":
   path = r'E:\work\git\test.jpg'
   path_out = r'E:\work\git\test_out.png'
-  image, _ = read_image(path)
+  image, _, _ = read_image(path)
   print(image)
   data = image.to_numpy()
   image.set_data(data[:1,:,:])

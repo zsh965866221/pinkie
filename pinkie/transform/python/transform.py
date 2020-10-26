@@ -74,17 +74,17 @@ if __name__ == '__main__':
   from pinkie.image.python.io import read_image, write_image
   import time
 
-  path = r'E:\work\git\t1.nii.gz'
-  path_out = r'E:\work\git\t1_out.mhd'
+  # path = r'E:\work\git\t1.nii.gz'
+  # path_out = r'E:\work\git\t1_out.mhd'
 
-  path = r'E:\work\git\MRIcrop-orig.gipl'
-  path_out = r'E:\work\git\MRIcrop-out.mhd'
+  # path = r'E:\work\git\MRIcrop-orig.gipl'
+  # path_out = r'E:\work\git\MRIcrop-out.mhd'
 
-  # path = r'E:\work\git\test.jpg'
-  # path_out = r'E:\work\git\test_out.jpg'
+  path = r'E:\work\git\test.jpg'
+  path_out = r'E:\work\git\test_out.jpg'
 
-  image, _ = read_image(path)
-  data = image.to_numpy()
+  image, _, _ = read_image(path)
+  # image = Image.from_numpy(np.ones((256, 512, 512), dtype=np.int32))
 
   size = image.size()
   spacing = image.spacing() * 3.0 / 2.0

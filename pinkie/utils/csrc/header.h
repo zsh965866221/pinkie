@@ -7,4 +7,11 @@
 #  define PINKIE_API
 #endif
 
+
+#ifdef _WIN32
+#  define PRAGMA __pragma
+#else
+#  define PRAGMA _Pragma
+#endif
+
 #endif //PINKIE_UTILS_CSRC_HEADER_H

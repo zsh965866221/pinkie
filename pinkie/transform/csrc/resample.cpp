@@ -2,6 +2,8 @@
 
 #include <omp.h>
 
+#include "pinkie/utils/csrc/header.h"
+
 namespace pinkie {
 
 Image* resample_trilinear(
@@ -46,6 +48,7 @@ Image* resample_trilinear(
   CALL_DTYPE(
     src_image.dtype(), type,
     [&]() {
+      PRAGMA(omp parallel for)
       for (int z = 0; z < dst_size(2); z++) {
         int index_base_xy = z * dst_size(0) * dst_size(1);
         for (int y = 0; y < dst_size[1]; y++) {
