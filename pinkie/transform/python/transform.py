@@ -75,7 +75,10 @@ if __name__ == '__main__':
   import time
 
   path = r'E:\work\git\t1.nii.gz'
-  path_out = r'E:\work\git\out.mhd'
+  path_out = r'E:\work\git\t1_out.mhd'
+
+  path = r'E:\work\git\MRIcrop-orig.gipl'
+  path_out = r'E:\work\git\MRIcrop-out.mhd'
 
   # path = r'E:\work\git\test.jpg'
   # path_out = r'E:\work\git\test_out.jpg'

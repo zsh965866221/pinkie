@@ -16,6 +16,8 @@ std::string pixeltype_string(const PixelType type) {
   switch (type) {
   case PixelType_int8:          return "int8";
   case PixelType_uint8:         return "uint8";
+  case PixelType_int16:         return "int16";
+  case PixelType_uint16:        return "uint16";
   case PixelType_int32:         return "int32";
   case PixelType_uint32:        return "uint32";
   case PixelType_int64:         return "int64";
