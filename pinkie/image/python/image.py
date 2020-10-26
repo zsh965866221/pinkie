@@ -81,6 +81,118 @@ def load_lib():
 
   lib.image_cast_.argtypes = [ctypes.c_void_p, ctypes.c_int]
   lib.image_cast_.restype = None
+
+  lib.image_origin.argtypes = [
+    ctypes.c_void_p, 
+    np.ctypeslib.ndpointer(
+      dtype=ctypes.c_float,
+      ndim=1,
+      flags='F_CONTIGUOUS'
+    ),
+  ]
+  lib.image_origin.restype = None
+
+  lib.image_spacing.argtypes = [
+    ctypes.c_void_p, 
+    np.ctypeslib.ndpointer(
+      dtype=ctypes.c_float,
+      ndim=1,
+      flags='F_CONTIGUOUS'
+    ),
+  ]
+  lib.image_spacing.restype = None
+
+  lib.image_axes.argtypes = [
+    ctypes.c_void_p, 
+    np.ctypeslib.ndpointer(
+      dtype=ctypes.c_float,
+      ndim=2,
+      flags='F_CONTIGUOUS'
+    ),
+  ]
+  lib.image_axes.restype = None
+
+  lib.image_axis.argtypes = [
+    ctypes.c_void_p, 
+    ctypes.c_uint,
+    np.ctypeslib.ndpointer(
+      dtype=ctypes.c_float,
+      ndim=1,
+      flags='F_CONTIGUOUS'
+    ),
+  ]
+  lib.image_axis.restype = None
+
+  lib.image_set_origin.argtypes = [
+    ctypes.c_void_p, 
+    np.ctypeslib.ndpointer(
+      dtype=ctypes.c_float,
+      ndim=1,
+      flags='F_CONTIGUOUS'
+    ),
+  ]
+  lib.image_set_origin.restype = None
+
+  lib.image_set_spacing.argtypes = [
+    ctypes.c_void_p, 
+    np.ctypeslib.ndpointer(
+      dtype=ctypes.c_float,
+      ndim=1,
+      flags='F_CONTIGUOUS'
+    ),
+  ]
+  lib.image_set_spacing.restype = None
+
+  lib.image_set_axes.argtypes = [
+    ctypes.c_void_p, 
+    np.ctypeslib.ndpointer(
+      dtype=ctypes.c_float,
+      ndim=2,
+      flags='F_CONTIGUOUS'
+    ),
+  ]
+  lib.image_set_axes.restype = None
+
+  lib.image_set_axis.argtypes = [
+    ctypes.c_void_p, 
+    np.ctypeslib.ndpointer(
+      dtype=ctypes.c_float,
+      ndim=1,
+      flags='F_CONTIGUOUS'
+    ),
+    ctypes.c_uint,
+  ]
+  lib.image_set_axis.restype = None
+
+  lib.image_world_to_voxel.argtypes = [
+    ctypes.c_void_p, 
+    np.ctypeslib.ndpointer(
+      dtype=ctypes.c_float,
+      ndim=1,
+      flags='F_CONTIGUOUS'
+    ),
+    np.ctypeslib.ndpointer(
+      dtype=ctypes.c_float,
+      ndim=1,
+      flags='F_CONTIGUOUS'
+    ),
+  ]
+  lib.image_world_to_voxel.restype = None
+
+  lib.image_voxel_to_world.argtypes = [
+    ctypes.c_void_p, 
+    np.ctypeslib.ndpointer(
+      dtype=ctypes.c_float,
+      ndim=1,
+      flags='F_CONTIGUOUS'
+    ),
+    np.ctypeslib.ndpointer(
+      dtype=ctypes.c_float,
+      ndim=1,
+      flags='F_CONTIGUOUS'
+    ),
+  ]
+  lib.image_voxel_to_world.restype = None
   
   return lib
 
@@ -110,7 +222,8 @@ class Image:
     )
   
   def __del__(self):
-    lib.image_delete(self.ptr)
+    if self.ptr is not None:
+      lib.image_delete(self.ptr)
   
   def size(self):
     ret = np.zeros((3), order='F', dtype=np.int)
@@ -118,7 +231,7 @@ class Image:
     return ret
   
   def frame(self):
-    return Frame(ptr=lib.image_frame(self.ptr))
+    return Frame(ptr=lib.image_frame(self.ptr), owned=False)
   
   def set_frame(self, frame: Frame):
     lib.image_set_frame(self.ptr, frame.ptr)
@@ -182,6 +295,57 @@ class Image:
   
   def cast_(self, dtype):
     lib.image_cast_(self.ptr, dtype_dict[dtype])
+  
+  def origin(self):
+    ret = np.zeros((3), order='F', dtype=np.float32)
+    lib.image_origin(self.ptr, ret)
+    return ret
+
+  def spacing(self):
+    ret = np.zeros((3), order='F', dtype=np.float32)
+    lib.image_spacing(self.ptr, ret)
+    return ret
+  
+  def axes(self):
+    ret = np.zeros((3, 3), order='F', dtype=np.float32)
+    lib.image_axes(self.ptr, ret)
+    return ret
+  
+  def axis(self, index):
+    assert index < 3
+    assert index >= 0
+
+    ret = np.zeros((3), order='F', dtype=np.float32)
+    lib.image_axis(self.ptr, ctypes.c_uint(index), ret)
+    return ret
+  
+  def set_origin(self, data):
+    data = np.array(data, order='F', dtype=np.float32, copy=False)
+    lib.image_set_origin(self.ptr, data)
+  
+  def set_spacing(self, data):
+    data = np.array(data, order='F', dtype=np.float32, copy=False)
+    lib.image_set_spacing(self.ptr, data)
+  
+  def set_axes(self, data):
+    data = np.array(data, order='F', dtype=np.float32, copy=False)
+    lib.image_set_axes(self.ptr, data)
+  
+  def set_axis(self, data, index):
+    data = np.array(data, order='F', dtype=np.float32, copy=False)
+    lib.image_set_axis(self.ptr, data, ctypes.c_uint(index))
+  
+  def world_to_voxel(self, data):
+    data = np.array(data, order='F', dtype=np.float32, copy=False)
+    ret = np.zeros((3), order='F', dtype=np.float32)
+    lib.image_world_to_voxel(self.ptr, data, ret)
+    return ret
+
+  def voxel_to_world(self, data):
+    data = np.array(data, order='F', dtype=np.float32, copy=False)
+    ret = np.zeros((3), order='F', dtype=np.float32)
+    lib.image_voxel_to_world(self.ptr, data, ret)
+    return ret
 
   def __repr__(self):
     return \

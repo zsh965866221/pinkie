@@ -139,17 +139,23 @@ def load_lib():
 lib = load_lib()
 
 class Frame:
-  def __init__(self, ptr=None):
+  def __init__(self, ptr=None, owned=True):
     if ptr is None:
       self.ptr = lib.frame_new()
+      self.owned = True
     else:
       self.ptr = ptr
+      self.owned = owned
   
   def copy(self):
-    return Frame(lib.frame_clone(self.ptr))
+    return Frame(
+      ptr=lib.frame_clone(self.ptr),
+      owned=True
+    )
 
   def __del__(self):
-    lib.frame_delete(self.ptr)
+    if self.ptr is not None and self.owned is True:
+      lib.frame_delete(self.ptr)
   
   def origin(self):
     ret = np.zeros((3), order='F', dtype=np.float32)

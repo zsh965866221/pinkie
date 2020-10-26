@@ -72,6 +72,10 @@ const Frame& Image::frame() const {
   return frame_;
 }
 
+Frame& Image::frame() {
+  return frame_;
+}
+
 void Image::set_frame(const Frame& frame) {
   frame_ = frame;
 }

@@ -79,17 +79,17 @@ if __name__ == '__main__':
 
   image, _ = read_image(path)
   size = image.size()
-  spacing = image.frame().spacing()
+  spacing = image.spacing() * 3 / 2
   frame = image.frame().copy()
 
   rotate_axis = np.array([0.0, 0.0, 1.0])
-  rotate_matrix = rotate(rotate_axis, 60.0 / 180.0 * np.pi)
-  origin = frame.origin() + size / 2.0 * frame.spacing()
-  spacing = spacing * 3 / 2
+  rotate_matrix = rotate(rotate_axis, 45.0 / 180.0 * np.pi)
+  origin = image.origin() + image.size() / 2.0 * image.spacing()
+  
   for i in range(3):
-    axis = np.dot(rotate_matrix, image.frame().axis(i))
+    axis = np.dot(rotate_matrix, image.axis(i))
     frame.set_axis(axis, i)
-    origin -= (axis * size[i] / 2 * spacing[i])
+    origin -= (axis * size[i] / 2.0 * spacing[i])
   frame.set_origin(origin)
   frame.set_spacing(spacing)
 
