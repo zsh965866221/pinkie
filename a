@@ -1,0 +1,50 @@
+def origin(self):
+    ret = np.zeros((3), order='F', dtype=np.float32)
+    lib.image_origin(self.ptr, ret)
+    return ret
+
+  def spacing(self):
+    ret = np.zeros((3), order='F', dtype=np.float32)
+    lib.image_spacing(self.ptr, ret)
+    return ret
+  
+  def axes(self):
+    ret = np.zeros((3, 3), order='F', dtype=np.float32)
+    lib.image_axes(self.ptr, ret)
+    return ret
+  
+  def axis(self, index):
+    assert index < 3
+    assert index >= 0
+
+    ret = np.zeros((3), order='F', dtype=np.float32)
+    lib.image_axis(self.ptr, ctypes.c_uint(index), ret)
+    return ret
+  
+  def set_origin(self, data):
+    data = np.array(data, order='F', dtype=np.float32, copy=False)
+    lib.image_set_origin(self.ptr, data)
+  
+  def set_spacing(self, data):
+    data = np.array(data, order='F', dtype=np.float32, copy=False)
+    lib.image_set_spacing(self.ptr, data)
+  
+  def set_axes(self, data):
+    data = np.array(data, order='F', dtype=np.float32, copy=False)
+    lib.image_set_axes(self.ptr, data)
+  
+  def set_axis(self, data, index):
+    data = np.array(data, order='F', dtype=np.float32, copy=False)
+    lib.image_set_axis(self.ptr, data, ctypes.c_uint(index))
+  
+  def world_to_voxel(self, data):
+    data = np.array(data, order='F', dtype=np.float32, copy=False)
+    ret = np.zeros((3), order='F', dtype=np.float32)
+    lib.image_world_to_voxel(self.ptr, data, ret)
+    return ret
+
+  def voxel_to_world(self, data):
+    data = np.array(data, order='F', dtype=np.float32, copy=False)
+    ret = np.zeros((3), order='F', dtype=np.float32)
+    lib.image_voxel_to_world(self.ptr, data, ret)
+    return ret

@@ -27,6 +27,7 @@ public:
 
 public:
   const Frame& frame() const;
+  Frame& frame();
   void set_frame(const Frame& frame);
 
 public:
