@@ -87,7 +87,7 @@ if __name__ == '__main__':
   spacing = image.spacing() * 3.0 / 2.0
   frame = image.frame().copy()
 
-  rotate_axis = np.array([0.0, 1.0, 0.0])
+  rotate_axis = np.array([0.0, 0.0, 1.0])
   rotate_matrix = rotate(rotate_axis, 45.0 / 180.0 * np.pi)
   origin = image.voxel_to_world(image.size() / 2.0)
   
