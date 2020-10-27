@@ -74,14 +74,14 @@ if __name__ == '__main__':
   from pinkie.image.python.io import read_image, write_image
   import time
 
-  # path = r'E:\work\A.mhd'
-  # path_out = r'E:\work\A_out.mhd'
+  # path = r'E:\workstation\pinkie\test\A.mhd'
+  # path_out = r'E:\workstation\pinkie\test\A_out.mhd'
 
-  path = r'E:\work\image.jpg'
-  path_out = r'E:\work\image_out.jpg'
+  path = r'E:\workstation\pinkie\test\image.jpg'
+  path_out = r'E:\workstation\pinkie\test\image_out.jpg'
 
   image, _, _ = read_image(path)
-  # image = Image.from_numpy(np.ones((256, 512, 512), dtype=np.int32))
+  # image = Image.from_numpy(np.ones((256, 900, 900), dtype=np.int32))
 
   size = image.size()
   spacing = image.spacing() * 3.0 / 2.0
