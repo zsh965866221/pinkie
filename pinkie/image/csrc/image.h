@@ -75,11 +75,11 @@ public:
 public:
   size_t bytes_size() const;
 
-private:
+protected:
   void clear_memory();
   size_t update_buffer();
 
-private:
+protected:
   void* data_;
   Eigen::Vector3i size_;
   Frame frame_;

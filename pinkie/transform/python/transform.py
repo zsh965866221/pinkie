@@ -84,11 +84,11 @@ if __name__ == '__main__':
   # image = Image.from_numpy(np.ones((256, 900, 900), dtype=np.int32))
 
   size = image.size()
-  spacing = image.spacing() * 3.0 / 2.0
+  spacing = image.spacing() * 2.0 / 2.0
   frame = image.frame().copy()
 
   rotate_axis = np.array([0.0, 0.0, 1.0])
-  rotate_matrix = rotate(rotate_axis, 30.0 / 180.0 * np.pi)
+  rotate_matrix = rotate(rotate_axis, -30.0 / 180.0 * np.pi)
   origin = image.voxel_to_world(image.size() / 2.0)
   
   for i in range(3):
