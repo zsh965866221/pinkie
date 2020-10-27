@@ -74,14 +74,11 @@ if __name__ == '__main__':
   from pinkie.image.python.io import read_image, write_image
   import time
 
-  # path = r'E:\work\git\t1.nii.gz'
-  # path_out = r'E:\work\git\t1_out.mhd'
+  # path = r'E:\work\A.mhd'
+  # path_out = r'E:\work\A_out.mhd'
 
-  # path = r'E:\work\git\MRIcrop-orig.gipl'
-  # path_out = r'E:\work\git\MRIcrop-out.mhd'
-
-  path = r'E:\work\git\test.jpg'
-  path_out = r'E:\work\git\test_out.jpg'
+  path = r'E:\work\image.jpg'
+  path_out = r'E:\work\image_out.jpg'
 
   image, _, _ = read_image(path)
   # image = Image.from_numpy(np.ones((256, 512, 512), dtype=np.int32))
@@ -91,7 +88,7 @@ if __name__ == '__main__':
   frame = image.frame().copy()
 
   rotate_axis = np.array([0.0, 0.0, 1.0])
-  rotate_matrix = rotate(rotate_axis, 45.0 / 180.0 * np.pi)
+  rotate_matrix = rotate(rotate_axis, 30.0 / 180.0 * np.pi)
   origin = image.voxel_to_world(image.size() / 2.0)
   
   for i in range(3):
