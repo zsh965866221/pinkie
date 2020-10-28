@@ -78,3 +78,7 @@ add_subdirectory(${DIR_THIRD_PARTY})
 option(BUILD_TEST "Build test, OFF Default" ON)
 add_subdirectory(image)
 add_subdirectory(transform)
+
+if (USE_CUDA)
+  add_subdirectory(cuda)
+endif()

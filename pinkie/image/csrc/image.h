@@ -39,14 +39,14 @@ public:
   T* data() {
     return static_cast<T*>(data_);
   }
-  void set_data(
+  virtual void set_data(
     void* data, 
     const Eigen::Vector3i& size, 
     const PixelType dtype,
     bool _is_2d = false,
     bool copy = true
   );
-  void set_data(
+  virtual void set_data(
     void* data, 
     const int height, 
     const int width,
@@ -55,7 +55,7 @@ public:
     bool _is_2d = false,
     bool copy = true
   );
-  void set_zero();
+  virtual void set_zero();
   void allocate(
     const int height,
     const int width,
@@ -70,14 +70,14 @@ public:
 public:
   PixelType dtype() const;
   Image* cast(const PixelType& dtype) const;
-  void cast_(const PixelType& dtype);
+  virtual void cast_(const PixelType& dtype);
 
 public:
   size_t bytes_size() const;
 
 protected:
-  void clear_memory();
-  size_t update_buffer();
+  virtual void clear_memory();
+  virtual size_t update_buffer();
 
 protected:
   void* data_;

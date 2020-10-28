@@ -1,5 +1,5 @@
-#ifndef PINKIE_IMAGE_CUDA_IMAGE_H
-#define PINKIE_IMAGE_CUDA_IMAGE_H
+#ifndef PINKIE_CUDA_IMAGE_IMAGE_H
+#define PINKIE_CUDA_IMAGE_IMAGE_H
 
 #include "pinkie/image/csrc/frame.h"
 #include "pinkie/image/csrc/image.h"
@@ -11,16 +11,19 @@ class CudaImage: public Image {
 public:
   CudaImage(
     const PixelType dtype = PixelType_float32,
-    const bool _is_2d = false
+    const bool _is_2d = false,
+    const int device = 0
   );
-  CudaImage(const Image& image, bool copy = true);
+  CudaImage(const CudaImage& image, bool copy = true);
   CudaImage(
     const int& height,
     const int& width,
     const int& depth,
     const PixelType dtype = PixelType_float32,
-    const bool _is_2d = false
+    const bool _is_2d = false,
+    const int device = 0
   );
+  CudaImage(const Image& image, int device = 0);
   virtual ~CudaImage();
 
 public:
@@ -34,14 +37,31 @@ public:
     bool copy = true
   );
   void set_zero();
+  void allocate(
+    const int height,
+    const int width,
+    const int depth,
+    const PixelType dtype,
+    const int device = 0
+  );
 
 public:
-  Image* cast(const PixelType& dtype) const;
+  CudaImage* cast(const PixelType& dtype) const;
   void cast_(const PixelType& dtype);
+
+public:
+  int device() const;
+  Image* cpu() const;
+  CudaImage* cuda(const int device = 0) const;
+  void cuda_(const int device = 0);
+
 
 protected:
   void clear_memory();
   size_t update_buffer();
+
+private:
+  void call_device_func(std::function<void()> func);
 
 private:
   int device_;
@@ -50,4 +70,4 @@ private:
 
 } // namespace pinkie
 
-#endif // PINKIE_IMAGE_CUDA_IMAGE_H
+#endif // PINKIE_CUDA_IMAGE_IMAGE_H
